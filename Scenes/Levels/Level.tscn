@@ -463,3 +463,5 @@ position = Vector2( 208, 368 )
 
 [node name="Jar4" parent="." instance=ExtResource( 3 )]
 position = Vector2( 688, 240 )
+
+[connection signal="moving_direction_changed" from="Character" to="Character" method="_on_moving_direction_changed"]
