@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/Validation.ogg-24f403513348c0d34eb7c370ee816362.oggstr"
+
+[deps]
+
+source_file="res://Scenes/InteractiveObjects/Coin/Validation.ogg"
+dest_files=[ "res://.import/Validation.ogg-24f403513348c0d34eb7c370ee816362.oggstr" ]
+
+[params]
+
+loop=false
+loop_offset=0

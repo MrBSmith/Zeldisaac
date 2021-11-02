@@ -8,6 +8,16 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "Node2D",
+"class": "Coin",
+"language": "GDScript",
+"path": "res://Scenes/InteractiveObjects/Coin/Coin.gd"
+} ]
+_global_script_class_icons={
+"Coin": ""
+}
+
 [application]
 
 config/name="Zeldisaac"
@@ -16,6 +26,10 @@ config/icon="res://icon.png"
 
 [display]
 
+window/size/width=640
+window/size/height=360
+window/size/borderless=true
+window/size/fullscreen=true
 window/stretch/mode="2d"
 window/stretch/aspect="keep_width"
 
