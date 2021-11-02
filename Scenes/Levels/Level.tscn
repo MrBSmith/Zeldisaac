@@ -434,7 +434,7 @@ points = PoolVector2Array( 32, 32, 0, 32, 0, 0, 32, 0 )
 5/shapes = [  ]
 5/z_index = 0
 
-[node name="Level" type="Node2D"]
+[node name="Level" type="YSort"]
 __meta__ = {
 "_edit_lock_": true
 }
