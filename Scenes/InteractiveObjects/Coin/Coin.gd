@@ -63,6 +63,7 @@ func collect() -> void:
 	
 	coin_sprite.set_visible(false)
 	shadow_sprite.set_visible(false)
+	EVENTS.emit_signal("coin_collected")
 	
 	yield(collect_sound, "finished")
 	
