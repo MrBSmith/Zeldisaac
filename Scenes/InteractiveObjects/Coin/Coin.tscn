@@ -148,6 +148,7 @@ tracks/1/keys = {
 script = ExtResource( 2 )
 
 [node name="CoinSprite" type="AnimatedSprite" parent="."]
+position = Vector2( 0, 1.61282 )
 frames = SubResource( 9 )
 animation = "Idle"
 __meta__ = {
@@ -157,7 +158,7 @@ __meta__ = {
 [node name="ShadowSprite" type="AnimatedSprite" parent="."]
 modulate = Color( 1, 1, 1, 0.356863 )
 position = Vector2( 0, 18 )
-scale = Vector2( 0.95, 0.95 )
+scale = Vector2( 0.99032, 0.99032 )
 frames = SubResource( 18 )
 animation = "Rotation"
 
