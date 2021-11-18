@@ -1,6 +1,6 @@
 extends TextureRect
 
-onready var money_label = $MoneyLabel
+onready var coin_counter = $CoinCounter
 
 
 func _ready() -> void:
@@ -8,6 +8,5 @@ func _ready() -> void:
 
 
 
-
 func _on_EVENTS_nb_coins_changed(nb_coins: int) -> void:
-	money_label.set_text(String(nb_coins))
+	coin_counter.set_text(String(nb_coins))
