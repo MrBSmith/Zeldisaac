@@ -65,6 +65,8 @@ func collect() -> void:
 	shadow_sprite.set_visible(false)
 	EVENTS.emit_signal("coin_collected")
 	
+	EVENTS.emit_signal("coin_collected")
+	
 	yield(collect_sound, "finished")
 	
 	queue_free()

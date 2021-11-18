@@ -1,4 +1,4 @@
-[gd_scene load_steps=51 format=2]
+[gd_scene load_steps=49 format=2]
 
 [ext_resource path="res://Scenes/Character/Character.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Scenes/Levels/Tilesets/Tileset.png" type="Texture" id=2]
@@ -9,7 +9,7 @@
 [ext_resource path="res://Scenes/UI/HUD/Portrait.png" type="Texture" id=7]
 [ext_resource path="res://Scenes/UI/Font/BabaMediumPixels.ttf" type="DynamicFontData" id=8]
 [ext_resource path="res://Scenes/UI/HUD/HUD_Mask.png" type="Texture" id=9]
-[ext_resource path="res://Scenes/Levels/HUD.gd" type="Script" id=10]
+[ext_resource path="res://Scenes/UI/HUD/HUD.gd" type="Script" id=10]
 
 [sub_resource type="ConvexPolygonShape2D" id=1]
 points = PoolVector2Array( 32, 32, 0, 32, 0, 0, 32, 0 )
@@ -440,21 +440,6 @@ points = PoolVector2Array( 32, 32, 0, 32, 0, 0, 32, 0 )
 5/z_index = 0
 
 [sub_resource type="DynamicFont" id=38]
-font_data = ExtResource( 8 )
-
-[sub_resource type="Theme" id=39]
-default_font = SubResource( 38 )
-Label/colors/font_color = Color( 1, 1, 1, 1 )
-Label/colors/font_color_shadow = Color( 0, 0, 0, 0 )
-Label/colors/font_outline_modulate = Color( 1, 1, 1, 1 )
-Label/constants/line_spacing = 3
-Label/constants/shadow_as_outline = 0
-Label/constants/shadow_offset_x = 1
-Label/constants/shadow_offset_y = 1
-Label/fonts/font = null
-Label/styles/normal = null
-
-[sub_resource type="DynamicFont" id=40]
 outline_size = 2
 outline_color = Color( 0.321569, 0, 0.176471, 1 )
 font_data = ExtResource( 8 )
@@ -497,21 +482,20 @@ position = Vector2( 272, 112 )
 [node name="Coin" parent="." instance=ExtResource( 5 )]
 position = Vector2( 240, 208 )
 
-[node name="UI_Layer" type="CanvasLayer" parent="."]
+[node name="UI_Container" type="CanvasLayer" parent="."]
 
-[node name="UI" type="Control" parent="UI_Layer"]
-visible = false
+[node name="UI" type="Control" parent="UI_Container"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-theme = SubResource( 39 )
 __meta__ = {
 "_edit_lock_": true,
 "_edit_use_anchors_": false
 }
 
-[node name="HUD" type="TextureRect" parent="UI_Layer/UI"]
-margin_right = 151.0
-margin_bottom = 65.0
+[node name="HUD" type="TextureRect" parent="UI_Container/UI"]
+light_mask = 0
+margin_right = 40.0
+margin_bottom = 40.0
 texture = ExtResource( 6 )
 script = ExtResource( 10 )
 __meta__ = {
@@ -519,44 +503,35 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="MoneyLabel" type="Label" parent="UI_Layer/UI/HUD"]
-anchor_left = 0.513
-anchor_top = 0.514
-anchor_right = 0.513
-anchor_bottom = 0.514
-margin_left = 0.00396729
-margin_top = -0.00269699
-margin_right = 40.004
-margin_bottom = 15.9973
-custom_fonts/font = SubResource( 40 )
-text = "0"
-__meta__ = {
-"_edit_lock_": true
-}
-
-[node name="Portrait" type="TextureRect" parent="UI_Layer/UI/HUD"]
-light_mask = 16384
-anchor_left = -0.023
-anchor_top = 0.038
-anchor_right = -0.023
-anchor_bottom = 0.038
-margin_left = 7.40609
-margin_top = 4.15345
-margin_right = 55.4061
-margin_bottom = 52.1534
+[node name="Portrait" type="TextureRect" parent="UI_Container/UI/HUD"]
+margin_left = 3.0
+margin_top = 6.0
+margin_right = 51.0
+margin_bottom = 54.0
 texture = ExtResource( 7 )
 __meta__ = {
 "_edit_lock_": true,
 "_edit_use_anchors_": false
 }
 
-[node name="Mask" type="Light2D" parent="UI_Layer/UI/HUD"]
+[node name="Light2D" type="Light2D" parent="UI_Container/UI/HUD"]
 position = Vector2( 75.5, 32.5 )
 texture = ExtResource( 9 )
 mode = 3
-range_layer_min = -512
-range_layer_max = 512
-range_item_cull_mask = 16384
+range_layer_min = 1
+range_layer_max = 1
 __meta__ = {
 "_edit_lock_": true
+}
+
+[node name="CoinCounter" type="Label" parent="UI_Container/UI/HUD"]
+light_mask = 0
+margin_left = 75.2471
+margin_top = 33.2053
+margin_right = 115.247
+margin_bottom = 49.2053
+custom_fonts/font = SubResource( 38 )
+text = "0"
+__meta__ = {
+"_edit_use_anchors_": false
 }
