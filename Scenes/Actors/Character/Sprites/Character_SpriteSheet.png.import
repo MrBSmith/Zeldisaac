@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Character_SpriteSheet.png-c8744ba901ef1b4a4e7fbd6f70ff6e49.stex"
+path="res://.import/Character_SpriteSheet.png-b651960983f70bec596521e7954066c5.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scenes/Character/Sprites/Character_SpriteSheet.png"
-dest_files=[ "res://.import/Character_SpriteSheet.png-c8744ba901ef1b4a4e7fbd6f70ff6e49.stex" ]
+source_file="res://Scenes/Actors/Character/Sprites/Character_SpriteSheet.png"
+dest_files=[ "res://.import/Character_SpriteSheet.png-b651960983f70bec596521e7954066c5.stex" ]
 
 [params]
 
@@ -28,6 +28,7 @@ process/fix_alpha_border=true
 process/premult_alpha=false
 process/HDR_as_SRGB=false
 process/invert_color=false
+process/normal_map_invert_y=false
 stream=false
 size_limit=0
 detect_3d=false

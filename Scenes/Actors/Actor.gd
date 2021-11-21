@@ -1,5 +1,5 @@
 extends KinematicBody2D
-class_name Character
+class_name Actor
 
 onready var animated_sprite = get_node("AnimatedSprite")
 onready var attack_hit_box = get_node("AttackHitBox")
@@ -27,13 +27,13 @@ signal state_changed
 signal facing_direction_changed
 signal moving_direction_changed
 
+
 #### ACCESSORS ####
 
 func set_state(value: int) -> void:
 	if value != state:
 		state = value
 		emit_signal("state_changed")
-
 func get_state() -> int:
 	return state
 
@@ -41,7 +41,6 @@ func set_facing_direction(value: Vector2) -> void:
 	if facing_direction != value:
 		facing_direction = value
 		emit_signal("facing_direction_changed")
-
 func get_facing_direction() -> Vector2:
 	return facing_direction
 
@@ -49,34 +48,22 @@ func set_moving_direction(value: Vector2) -> void:
 	if value != moving_direction:
 		moving_direction = value
 		emit_signal("moving_direction_changed")
-
 func get_moving_direction() -> Vector2:
 	return moving_direction
 
+
 #### BUILT-IN ####
 
-func _process(_delta: float) -> void:
+func _ready() -> void:
+	var __ = connect("state_changed", self, "_on_state_changed")
+	__ = connect("facing_direction_changed", self, "_on_facing_direction_changed")
+	__ = connect("moving_direction_changed", self, "_on_moving_direction_changed")
+	__ = animated_sprite.connect("animation_finished", self, "_on_AnimatedSprite_animation_finished")
+	__ = animated_sprite.connect("frame_changed", self, "_on_AnimatedSprite_frame_changed")
+
+
+func _physics_process(_delta: float) -> void:
 	var __ = move_and_slide(moving_direction * speed)
-
-
-func _input(_event: InputEvent) -> void:
-	# Update the direction
-	var dir = Vector2(
-		int(Input.is_action_pressed("ui_right")) - int(Input.is_action_pressed("ui_left")),
-		int(Input.is_action_pressed("ui_down")) - int(Input.is_action_pressed("ui_up"))
-	)
-	
-	set_moving_direction(dir.normalized())
-	
-	# Update the state based on the input
-	if Input.is_action_just_pressed("ui_accept"):
-		set_state(STATE.ATTACK)
-	
-	if state != STATE.ATTACK:
-		if moving_direction == Vector2.ZERO:
-			set_state(STATE.IDLE)
-		else:
-			set_state(STATE.MOVE)
 
 
 #### LOGIC ####
@@ -92,12 +79,6 @@ func _update_animation() -> void:
 		STATE.ATTACK: state_name = "Attack"
 	
 	animated_sprite.play(state_name + dir_name)
-
-
-# Update the rotation of the attack hitbox based on the facing direction
-func _update_attack_hitbox_direction() -> void:
-	var angle = facing_direction.angle()
-	attack_hit_box.set_rotation_degrees(rad2deg(angle) - 90)
 
 
 # Find the name of the given direction and returns it as a String
@@ -122,31 +103,22 @@ func _attack_effect() -> void:
 			body.destroy()
 
 
-func _interaction_attempt() -> bool:
-	var bodies_array = attack_hit_box.get_overlapping_bodies()
-	var attempt_success = false
-	
-	for body in bodies_array:
-		if body.has_method("interact"):
-			body.interact()
-			attempt_success = true
-	
-	return attempt_success
+# Update the rotation of the attack hitbox based on the facing direction
+func _update_attack_hitbox_direction() -> void:
+	var angle = facing_direction.angle()
+	attack_hit_box.set_rotation_degrees(rad2deg(angle) - 90)
+
 
 
 #### SIGNAL RESPONSES ####
 
+func _on_state_changed() -> void:
+	_update_animation()
+
+
 func _on_AnimatedSprite_animation_finished() -> void:
 	if "Attack".is_subsequence_of(animated_sprite.get_animation()):
 		set_state(STATE.IDLE)
-
-
-func _on_state_changed() -> void:
-	if state == STATE.ATTACK:
-		if _interaction_attempt():
-			set_state(STATE.IDLE)
-	
-	_update_animation()
 
 
 func _on_facing_direction_changed() -> void:

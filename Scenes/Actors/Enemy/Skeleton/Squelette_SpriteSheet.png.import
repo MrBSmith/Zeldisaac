@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Character.png-fdbc4f35b63cc165f492f9874846bb1e.stex"
+path="res://.import/Squelette_SpriteSheet.png-3bcddd7692c7bf3deb6b4b681277fa35.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scenes/Character/Sprites/Character.png"
-dest_files=[ "res://.import/Character.png-fdbc4f35b63cc165f492f9874846bb1e.stex" ]
+source_file="res://Scenes/Actors/Enemy/Skeleton/Squelette_SpriteSheet.png"
+dest_files=[ "res://.import/Squelette_SpriteSheet.png-3bcddd7692c7bf3deb6b4b681277fa35.stex" ]
 
 [params]
 
@@ -28,6 +28,7 @@ process/fix_alpha_border=true
 process/premult_alpha=false
 process/HDR_as_SRGB=false
 process/invert_color=false
+process/normal_map_invert_y=false
 stream=false
 size_limit=0
 detect_3d=false

@@ -10,18 +10,30 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "KinematicBody2D",
+"class": "Actor",
+"language": "GDScript",
+"path": "res://Scenes/Actors/Actor.gd"
+}, {
+"base": "Actor",
 "class": "Character",
 "language": "GDScript",
-"path": "res://Scenes/Character/Character.gd"
+"path": "res://Scenes/Actors/Character/Character.gd"
 }, {
 "base": "Node2D",
 "class": "Coin",
 "language": "GDScript",
 "path": "res://Scenes/InteractiveObjects/Coin/Coin.gd"
+}, {
+"base": "Actor",
+"class": "Enemy",
+"language": "GDScript",
+"path": "res://Scenes/Actors/Enemy/Enemy.gd"
 } ]
 _global_script_class_icons={
+"Actor": "",
 "Character": "",
-"Coin": ""
+"Coin": "",
+"Enemy": ""
 }
 
 [application]
