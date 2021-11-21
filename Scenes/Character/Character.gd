@@ -1,4 +1,5 @@
 extends KinematicBody2D
+class_name Character
 
 onready var animated_sprite = get_node("AnimatedSprite")
 onready var attack_hit_box = get_node("AttackHitBox")

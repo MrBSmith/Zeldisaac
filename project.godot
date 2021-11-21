@@ -9,12 +9,18 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "KinematicBody2D",
+"class": "Character",
+"language": "GDScript",
+"path": "res://Scenes/Character/Character.gd"
+}, {
 "base": "Node2D",
 "class": "Coin",
 "language": "GDScript",
 "path": "res://Scenes/InteractiveObjects/Coin/Coin.gd"
 } ]
 _global_script_class_icons={
+"Character": "",
 "Coin": ""
 }
 

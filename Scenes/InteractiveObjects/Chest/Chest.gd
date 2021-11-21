@@ -17,5 +17,11 @@ func interact() -> void:
 		animated_sprite.play("Open")
 
 
+
+func _spawn_content() -> void:
+	EVENTS.emit_signal("spawn_coin", position)
+
+
 func _on_AnimatedSprite_animation_finished() -> void:
 	state = STATE.OPENED
+	_spawn_content()

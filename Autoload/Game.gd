@@ -19,6 +19,8 @@ func get_nb_coins() -> int: return nb_coins
 
 
 func _ready() -> void:
+	randomize()
+	
 	EVENTS.connect("coin_collected", self, "_on_EVENTS_coin_collected")
 
 

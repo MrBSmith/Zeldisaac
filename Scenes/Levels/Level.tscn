@@ -4,12 +4,12 @@
 [ext_resource path="res://Scenes/Levels/Tilesets/Tileset.png" type="Texture" id=2]
 [ext_resource path="res://Scenes/InteractiveObjects/Jar/Jar.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Scenes/InteractiveObjects/Chest/Chest.tscn" type="PackedScene" id=4]
-[ext_resource path="res://Scenes/InteractiveObjects/Coin/Coin.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Scenes/UI/HUD/HUD.png" type="Texture" id=6]
 [ext_resource path="res://Scenes/UI/HUD/Portrait.png" type="Texture" id=7]
 [ext_resource path="res://Scenes/UI/Font/BabaMediumPixels.ttf" type="DynamicFontData" id=8]
 [ext_resource path="res://Scenes/UI/HUD/HUD_Mask.png" type="Texture" id=9]
 [ext_resource path="res://Scenes/UI/HUD/HUD.gd" type="Script" id=10]
+[ext_resource path="res://Scenes/Levels/CoinFactory.gd" type="Script" id=11]
 
 [sub_resource type="ConvexPolygonShape2D" id=1]
 points = PoolVector2Array( 32, 32, 0, 32, 0, 0, 32, 0 )
@@ -479,9 +479,6 @@ position = Vector2( 688, 240 )
 [node name="Chest" parent="." instance=ExtResource( 4 )]
 position = Vector2( 272, 112 )
 
-[node name="Coin" parent="." instance=ExtResource( 5 )]
-position = Vector2( 240, 208 )
-
 [node name="UI_Container" type="CanvasLayer" parent="."]
 
 [node name="UI" type="Control" parent="UI_Container"]
@@ -535,3 +532,6 @@ text = "0"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="CoinFactory" type="Node2D" parent="."]
+script = ExtResource( 11 )
