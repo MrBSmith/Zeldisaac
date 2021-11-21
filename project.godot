@@ -14,6 +14,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Scenes/Actors/Actor.gd"
 }, {
+"base": "State",
+"class": "ActorMoveState",
+"language": "GDScript",
+"path": "res://Scenes/Actors/States/ActorMoveState.gd"
+}, {
 "base": "Actor",
 "class": "Character",
 "language": "GDScript",
@@ -24,16 +29,41 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Scenes/InteractiveObjects/Coin/Coin.gd"
 }, {
+"base": "State",
+"class": "CollectableFollowState",
+"language": "GDScript",
+"path": "res://Scenes/InteractiveObjects/Collectables/States/CollectableFollowState.gd"
+}, {
+"base": "State",
+"class": "CollectableSpawnState",
+"language": "GDScript",
+"path": "res://Scenes/InteractiveObjects/Collectables/States/CollectablSpawnState.gd"
+}, {
 "base": "Actor",
 "class": "Enemy",
 "language": "GDScript",
 "path": "res://Scenes/Actors/Enemy/Enemy.gd"
+}, {
+"base": "Node",
+"class": "State",
+"language": "GDScript",
+"path": "res://StateMachine/State.gd"
+}, {
+"base": "Node",
+"class": "StateMachine",
+"language": "GDScript",
+"path": "res://StateMachine/StateMachine.gd"
 } ]
 _global_script_class_icons={
 "Actor": "",
+"ActorMoveState": "",
 "Character": "",
 "Coin": "",
-"Enemy": ""
+"CollectableFollowState": "",
+"CollectableSpawnState": "",
+"Enemy": "",
+"State": "",
+"StateMachine": ""
 }
 
 [application]

@@ -1,9 +1,13 @@
-[gd_scene load_steps=28 format=2]
+[gd_scene load_steps=32 format=2]
 
 [ext_resource path="res://Scenes/InteractiveObjects/Coin/PetitePiece_SpriteSheet.png" type="Texture" id=1]
 [ext_resource path="res://Scenes/InteractiveObjects/Coin/Coin.gd" type="Script" id=2]
 [ext_resource path="res://Scenes/InteractiveObjects/Coin/Validation.ogg" type="AudioStream" id=3]
 [ext_resource path="res://Scenes/InteractiveObjects/Coin/PetitePieceShadow_SpriteSheet.png" type="Texture" id=4]
+[ext_resource path="res://StateMachine/StateMachine.gd" type="Script" id=5]
+[ext_resource path="res://StateMachine/State.gd" type="Script" id=6]
+[ext_resource path="res://Scenes/InteractiveObjects/Collectables/States/CollectableFollowState.gd" type="Script" id=7]
+[ext_resource path="res://Scenes/InteractiveObjects/Collectables/States/CollectablSpawnState.gd" type="Script" id=8]
 
 [sub_resource type="AtlasTexture" id=1]
 atlas = ExtResource( 1 )
@@ -197,13 +201,27 @@ autostart = true
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/Wave = SubResource( 23 )
 
-[node name="SpawnDurationTimer" type="Timer" parent="."]
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource( 5 )
+
+[node name="Spawn" type="Node" parent="StateMachine"]
+script = ExtResource( 8 )
+
+[node name="SpawnDurationTimer" type="Timer" parent="StateMachine/Spawn"]
 wait_time = 0.2
 one_shot = true
 autostart = true
 
-[connection signal="state_changed" from="." to="." method="_on_Coin_state_changed"]
+[node name="Idle" type="Node" parent="StateMachine"]
+script = ExtResource( 6 )
+
+[node name="Follow" type="Node" parent="StateMachine"]
+script = ExtResource( 7 )
+
+[node name="Collect" type="Node" parent="StateMachine"]
+script = ExtResource( 6 )
+
 [connection signal="animation_finished" from="CoinSprite" to="." method="_on_AnimatedSprite_animation_finished"]
 [connection signal="body_entered" from="Area2D" to="." method="_on_FollowArea_body_entered"]
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
-[connection signal="timeout" from="SpawnDurationTimer" to="." method="_on_SpawnDurationTimer_timeout"]
+[connection signal="state_changed" from="StateMachine" to="." method="_on_StateMachine_state_changed"]
