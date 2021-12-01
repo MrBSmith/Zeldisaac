@@ -201,7 +201,7 @@ autostart = true
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/Wave = SubResource( 23 )
 
-[node name="StateMachine" type="Node" parent="."]
+[node name="StateMachine" type="Node2D" parent="."]
 script = ExtResource( 5 )
 
 [node name="Spawn" type="Node" parent="StateMachine"]

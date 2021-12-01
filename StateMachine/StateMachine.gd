@@ -1,4 +1,4 @@
-extends Node
+extends Node2D
 class_name StateMachine
 
 var current_state : Node = null setget set_state, get_state
