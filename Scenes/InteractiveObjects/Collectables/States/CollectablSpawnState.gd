@@ -12,16 +12,14 @@ var spawn_dir_velocity := Vector2.ZERO
 var damping := 20.0
 
 
-
 func _ready() -> void:
 	var __ = spawn_duration_timer.connect("timeout", self, "_on_SpawnDurationTimer_timeout")
 
 
 func enter_state() -> void:
-	var rdm_angle = rand_range(0.0, 360.0)
+	var rdm_angle = deg2rad(rand_range(0.0, 360.0))
 	spawn_dir = Vector2(sin(rdm_angle), cos(rdm_angle))
 	spawn_duration_timer.start()
-
 
 
 func update(delta: float) -> void:

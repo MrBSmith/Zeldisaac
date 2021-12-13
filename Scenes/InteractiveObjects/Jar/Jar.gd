@@ -16,6 +16,8 @@ func destroy() -> void:
 	if state != STATE.IDLE:
 		return
 	
+	EVENTS.emit_signal("obstacle_destroyed", self)
+	
 	state = STATE.BREAKING
 	animated_sprite.play("Break")
 

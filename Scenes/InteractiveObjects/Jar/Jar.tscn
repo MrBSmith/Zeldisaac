@@ -41,8 +41,9 @@ animations = [ {
 } ]
 
 [sub_resource type="CircleShape2D" id=8]
+radius = 7.28606
 
-[node name="Jar" type="StaticBody2D"]
+[node name="Jar" type="StaticBody2D" groups=["Obstacle"]]
 script = ExtResource( 2 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]

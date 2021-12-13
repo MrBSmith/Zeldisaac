@@ -5,3 +5,5 @@ extends Node
 signal spawn_coin(pos)
 signal coin_collected()
 signal nb_coins_changed(nb_coins)
+
+signal obstacle_destroyed(obstacle)

@@ -8,12 +8,14 @@ onready var attack_area = $AttackArea
 var target : Node2D = null
 var path : Array = []
 
+var pathfinder : Pathfinder = null
+
 var target_in_chase_area : bool = false setget set_target_in_chase_area
 var target_in_attack_area : bool = false setget set_target_in_attack_area
 
 signal target_in_chase_area_changed
 signal target_in_attack_area_changed
-
+signal move_path_finished
 
 #### ACCESSORS ####
 
@@ -59,7 +61,10 @@ func _update_behaviour_state() -> void:
 
 
 func update_move_path(dest: Vector2) -> void:
-	path = [dest]
+	if pathfinder == null:
+		path = [dest]
+	else:
+		path = pathfinder.find_path(global_position, dest)
 
 
 func move_along_path(delta: float) -> void:
@@ -74,6 +79,10 @@ func move_along_path(delta: float) -> void:
 	if dist <= speed * delta:
 		var __ = move_and_collide(dir * dist)
 		path.remove(0)
+		
+		if path.empty():
+			emit_signal("move_path_finished")
+		
 	else:
 		var __ = move_and_collide(dir * speed * delta)
 
