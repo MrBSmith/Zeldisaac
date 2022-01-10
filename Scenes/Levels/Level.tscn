@@ -535,4 +535,4 @@ __meta__ = {
 script = ExtResource( 11 )
 
 [node name="Skeleton" parent="." instance=ExtResource( 5 )]
-position = Vector2( 528, 112 )
+position = Vector2( 496, 144 )

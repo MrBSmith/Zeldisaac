@@ -32,8 +32,9 @@ func find_path(from: Vector2, to: Vector2) -> PoolVector2Array:
 			continue
 		
 		var point = point_path[i]
+		var world_pos = tilemap.map_to_world(point) + Vector2.ONE * 8
 		
-		var pos = tilemap.map_to_world(point) if i != point_path.size() - 1 else to
+		var pos = world_pos if i != point_path.size() - 1 else to
 		path.append(pos)
 	
 	return path

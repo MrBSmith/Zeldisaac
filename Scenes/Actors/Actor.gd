@@ -1,9 +1,10 @@
 extends KinematicBody2D
 class_name Actor
 
-onready var state_machine = get_node("StateMachine")
-onready var animated_sprite = get_node("AnimatedSprite")
-onready var attack_hit_box = get_node("AttackHitBox")
+onready var state_machine = $StateMachine
+onready var animated_sprite = $AnimatedSprite
+onready var attack_hit_box = $AttackHitBox
+onready var tween = $Tween
 
 var dir_dict : Dictionary = {
 	"Left": Vector2.LEFT,
@@ -76,7 +77,14 @@ func _attack_effect() -> void:
 	var bodies_array = attack_hit_box.get_overlapping_bodies()
 	
 	for body in bodies_array:
-		if body.has_method("destroy"):
+		if body == self:
+			continue
+		
+		if body.has_method("hurt"):
+			body.face_position(global_position)
+			body.hurt()
+		
+		elif body.has_method("destroy"):
 			body.destroy()
 
 
@@ -85,6 +93,32 @@ func _update_attack_hitbox_direction() -> void:
 	var angle = facing_direction.angle()
 	attack_hit_box.set_rotation_degrees(rad2deg(angle) - 90)
 
+
+func hurt() -> void:
+	state_machine.set_state("Hurt")
+	_hurt_feedback()
+
+
+func _hurt_feedback() -> void:
+	tween.interpolate_property(animated_sprite.material, "shader_param/opacity", 0.0, 1.0, 0.1)
+	tween.start()
+	
+	yield(tween, "tween_all_completed")
+	
+	tween.interpolate_property(animated_sprite.material, "shader_param/opacity", 1.0, 0.0, 0.1)
+	tween.start()
+
+
+func face_position(pos: Vector2) -> void:
+	var dir = global_position.direction_to(pos)
+	face_direction(dir)
+
+
+func face_direction(dir: Vector2) -> void:
+	if abs(dir.x) > abs(dir.y):
+		set_facing_direction(Vector2(sign(dir.x), 0))
+	else:
+		set_facing_direction(Vector2(0, sign(dir.y)))
 
 
 #### SIGNAL RESPONSES ####
@@ -95,6 +129,9 @@ func _on_state_changed(_new_state: Object) -> void:
 
 func _on_AnimatedSprite_animation_finished() -> void:
 	if "Attack".is_subsequence_of(animated_sprite.get_animation()):
+		state_machine.set_state("Idle")
+
+	elif "Hurt".is_subsequence_of(animated_sprite.get_animation()):
 		state_machine.set_state("Idle")
 
 
