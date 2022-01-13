@@ -10,6 +10,9 @@ func _ready() -> void:
 
 
 func enter_state() -> void:
+	if !is_instance_valid(owner):
+		return
+	
 	if owner.state_machine != null:
 		owner.state_machine.set_state("Idle")
 	

@@ -38,6 +38,7 @@ func _ready() -> void:
 	__ = chase_area.connect("body_exited", self, "_on_ChaseArea_body_exited")
 	__ = attack_area.connect("body_entered", self, "_on_AttackArea_body_entered")
 	__ = attack_area.connect("body_exited", self, "_on_AttackArea_body_exited")
+	__ = $BehaviourTree/Attack/Cooldown.connect("timeout", self, "_on_attack_cooldown_finished")
 	__ = connect("target_in_chase_area_changed", self, "_on_target_in_chase_area_changed")
 	__ = connect("target_in_attack_area_changed", self, "_on_target_in_attack_area_changed")
 	
@@ -52,8 +53,12 @@ func _update_target() -> void:
 
 
 func _update_behaviour_state() -> void:
-	if can_attack():
-		behaviour_tree.set_state("Attack")
+	if target_in_attack_area:
+		if $BehaviourTree/Attack.is_cooldown_running():
+			behaviour_tree.set_state("Inactive")
+			path = []
+		else:
+			behaviour_tree.set_state("Attack")
 		
 	elif target_in_chase_area:
 		behaviour_tree.set_state("Chase")
@@ -137,9 +142,16 @@ func _on_moving_direction_changed() -> void:
 	face_direction(moving_direction)
 
 
-func _on_StateMachine_state_changed(state) -> void:
+func _on_StateMachine_state_changed(state: State) -> void:
 	if state_machine == null:
 		return
 	
-	if state.name == "Idle" && state_machine.previous_state == $StateMachine/Attack:
+	if state_machine.previous_state == $StateMachine/Attack or state_machine.previous_state == $StateMachine/Hurt:
 		_update_behaviour_state()
+	
+	if state.name == "Attack":
+		face_position(target.global_position)
+
+
+func _on_attack_cooldown_finished() -> void:
+	_update_behaviour_state()

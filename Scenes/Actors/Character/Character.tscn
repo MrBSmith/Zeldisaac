@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Scenes/Actors/Character/Character_AttackHitBox.tres" type="Shape2D" id=1]
 [ext_resource path="res://Scenes/Actors/Character/Character.gd" type="Script" id=2]
@@ -6,10 +6,34 @@
 [ext_resource path="res://Scenes/Actors/Character/Character_Hitbox.tres" type="Shape2D" id=4]
 [ext_resource path="res://Scenes/Actors/Actor.tscn" type="PackedScene" id=5]
 
+[sub_resource type="Shader" id=1]
+resource_local_to_scene = true
+code = "shader_type canvas_item;
+
+uniform vec4 flash_color : hint_color = vec4(1.0);
+uniform float opacity : hint_range(0.0, 1.0) = 0.0;
+
+void fragment(){
+	vec4 current_color = texture(TEXTURE, UV);
+	if (current_color.a == 0.0){
+		discard;
+	}
+	
+	COLOR = mix(current_color, flash_color, opacity);
+}"
+
+[sub_resource type="ShaderMaterial" id=2]
+resource_local_to_scene = true
+shader = SubResource( 1 )
+shader_param/flash_color = Color( 1, 1, 1, 1 )
+shader_param/opacity = 0.0
+
 [node name="Character" instance=ExtResource( 5 )]
 script = ExtResource( 2 )
+max_hp = 10
 
 [node name="AnimatedSprite" parent="." index="0"]
+material = SubResource( 2 )
 frames = ExtResource( 3 )
 animation = "IdleDown"
 
