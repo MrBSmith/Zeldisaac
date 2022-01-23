@@ -53,6 +53,9 @@ func _update_target() -> void:
 
 
 func _update_behaviour_state() -> void:
+	if state_machine.get_state_name() == "Dead":
+		return
+	
 	if target_in_attack_area:
 		if $BehaviourTree/Attack.is_cooldown_running():
 			behaviour_tree.set_state("Inactive")
@@ -100,6 +103,12 @@ func move_along_path(delta: float) -> void:
 
 func can_attack() -> bool:
 	return !$BehaviourTree/Attack.is_cooldown_running() && target_in_attack_area
+
+
+func die() -> void:
+	.die()
+	
+	behaviour_tree.set_state("Inactive")
 
 
 #### SIGNAL RESPONSES ####

@@ -23,6 +23,7 @@ onready var hp : int = max_hp setget set_hp, get_hp
 signal facing_direction_changed
 signal moving_direction_changed
 signal hp_changed(hp)
+signal death_feedback_finished
 
 #### ACCESSORS ####
 
@@ -57,6 +58,7 @@ func _ready() -> void:
 	__ = animated_sprite.connect("animation_finished", self, "_on_AnimatedSprite_animation_finished")
 	__ = animated_sprite.connect("frame_changed", self, "_on_AnimatedSprite_frame_changed")
 	__ = connect("hp_changed", self, "_on_hp_changed")
+	__ = connect("death_feedback_finished", self, "_on_death_feedback_finished")
 
 
 #### LOGIC ####
@@ -106,14 +108,23 @@ func _update_attack_hitbox_direction() -> void:
 
 
 func hurt(damage: int) -> void:
-	set_hp(hp - damage)
-	state_machine.set_state("Hurt")
-	_hurt_feedback()
+	if state_machine.get_state_name() == "Block":
+		parry()
+	else:
+		set_hp(hp - damage)
+		state_machine.set_state("Hurt")
+		_hurt_feedback()
+
+
+func parry() -> void:
+	state_machine.set_state("Parry")
 
 
 func die() -> void:
 	EVENTS.emit_signal("actor_died", self)
-	queue_free()
+	state_machine.set_state("Dead")
+	_death_feedback()
+	$CollisionShape2D.set_disabled(true)
 
 
 func _hurt_feedback() -> void:
@@ -124,6 +135,14 @@ func _hurt_feedback() -> void:
 	
 	tween.interpolate_property(animated_sprite.material, "shader_param/opacity", 1.0, 0.0, 0.1)
 	tween.start()
+
+
+func _death_feedback() -> void:
+	tween.interpolate_property(self, "modulate:a", 1.0, 0.0, 0.8)
+	tween.start()
+	
+	yield(tween, "tween_all_completed")
+	emit_signal("death_feedback_finished")
 
 
 func _compute_damage(_target: Actor) -> int:
@@ -144,9 +163,8 @@ func face_direction(dir: Vector2) -> void:
 
 #### SIGNAL RESPONSES ####
 
-func _on_hp_changed(new_hp: int) -> void:
-	if new_hp == 0:
-		die()
+func _on_hp_changed(_new_hp: int) -> void:
+	pass
 
 
 func _on_state_changed(_new_state: Object) -> void:
@@ -156,9 +174,15 @@ func _on_state_changed(_new_state: Object) -> void:
 func _on_AnimatedSprite_animation_finished() -> void:
 	if "Attack".is_subsequence_of(animated_sprite.get_animation()):
 		state_machine.set_state("Idle")
-
+	
+	elif "Parry".is_subsequence_of(animated_sprite.get_animation()):
+		state_machine.set_state("Block")
+	
 	elif "Hurt".is_subsequence_of(animated_sprite.get_animation()):
-		state_machine.set_state("Idle")
+		if hp == 0:
+			die()
+		else:
+			state_machine.set_state("Idle")
 
 
 func _on_facing_direction_changed() -> void:
@@ -188,3 +212,7 @@ func _on_AnimatedSprite_frame_changed() -> void:
 	if "Attack".is_subsequence_of(animated_sprite.get_animation()):
 		if animated_sprite.get_frame() == 1:
 			_attack_effect()
+
+
+func _on_death_feedback_finished() -> void:
+	queue_free()

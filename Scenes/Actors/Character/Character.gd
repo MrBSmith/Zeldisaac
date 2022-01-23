@@ -20,14 +20,20 @@ func _input(_event: InputEvent) -> void:
 	if Input.is_action_just_pressed("ui_accept"):
 		state_machine.set_state("Attack")
 	
-	if state_machine.get_state_name() != "Attack":
-		if moving_direction == Vector2.ZERO:
-			state_machine.set_state("Idle")
-		else:
-			state_machine.set_state("Move")
+	_update_state()
 
 
 #### LOGIC ####
+
+func _update_state() -> void:
+	if not state_machine.get_state_name() in ["Attack", "Parry"]:
+		if Input.is_action_pressed("block"):
+			state_machine.set_state("Block")
+		
+		elif moving_direction == Vector2.ZERO:
+			state_machine.set_state("Idle")
+		else:
+			state_machine.set_state("Move")
 
 
 func _interaction_attempt() -> bool:
@@ -54,6 +60,9 @@ func _on_state_changed(new_state: Object) -> void:
 	if new_state.name == "Attack":
 		if _interaction_attempt():
 			state_machine.set_state("Idle")
+	
+	elif state_machine.previous_state == $StateMachine/Attack:
+		_update_state()
 	
 	._on_state_changed(new_state)
 
