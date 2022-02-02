@@ -10,12 +10,12 @@ func update(delta: float) -> void:
 		return
 	
 	var target_pos = target.get_position()
-	var dist = owner.position.distance_to(target_pos)
+	var dist = owner.object.position.distance_to(target_pos)
 	var spd = speed * delta
 	
 	if dist < spd:
-		owner.position = target_pos
+		owner.object.position = target_pos
 		if get_parent().get_state_name() == "Follow":
 			owner.collect()
 	else:
-		owner.position = owner.position.move_toward(target_pos, spd)
+		owner.object.position = owner.object.position.move_toward(target_pos, spd)

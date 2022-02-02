@@ -3,7 +3,7 @@ extends Node
 # warnings-disable
 
 signal spawn_coin(pos)
-signal coin_collected()
+signal object_collected(obj)
 signal nb_coins_changed(nb_coins)
 
 signal character_hp_changed(hp)

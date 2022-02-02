@@ -463,6 +463,7 @@ bg_color = Color( 0.239216, 0.639216, 0.74902, 0 )
 [node name="Level" type="YSort"]
 script = ExtResource( 13 )
 __meta__ = {
+"_edit_horizontal_guides_": [  ],
 "_edit_lock_": true
 }
 

@@ -29,7 +29,7 @@ func update(delta: float) -> void:
 	spawn_dir_velocity = spawn_dir_velocity.clamped(spawn_dir_velocity.length() - damping)
 	
 	var velocity = spawn_v_velocity + spawn_dir_velocity
-	owner.position += velocity * delta
+	owner.object.position += velocity * delta
 
 
 func _on_SpawnDurationTimer_timeout() -> void:

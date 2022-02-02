@@ -1,13 +1,13 @@
-[gd_scene load_steps=32 format=2]
+[gd_scene load_steps=29 format=2]
 
 [ext_resource path="res://Scenes/InteractiveObjects/Coin/PetitePiece_SpriteSheet.png" type="Texture" id=1]
 [ext_resource path="res://Scenes/InteractiveObjects/Coin/Coin.gd" type="Script" id=2]
-[ext_resource path="res://Scenes/InteractiveObjects/Coin/Validation.ogg" type="AudioStream" id=3]
+[ext_resource path="res://Scenes/Behaviours/CollectableBehaviour.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Scenes/InteractiveObjects/Coin/PetitePieceShadow_SpriteSheet.png" type="Texture" id=4]
-[ext_resource path="res://StateMachine/StateMachine.gd" type="Script" id=5]
-[ext_resource path="res://StateMachine/State.gd" type="Script" id=6]
-[ext_resource path="res://Scenes/InteractiveObjects/Collectables/States/CollectableFollowState.gd" type="Script" id=7]
-[ext_resource path="res://Scenes/InteractiveObjects/Collectables/States/CollectablSpawnState.gd" type="Script" id=8]
+
+[sub_resource type="AtlasTexture" id=8]
+atlas = ExtResource( 1 )
+region = Rect2( 0, 0, 32, 32 )
 
 [sub_resource type="AtlasTexture" id=1]
 atlas = ExtResource( 1 )
@@ -37,22 +37,22 @@ region = Rect2( 64, 32, 32, 32 )
 atlas = ExtResource( 1 )
 region = Rect2( 96, 32, 32, 32 )
 
-[sub_resource type="AtlasTexture" id=8]
-atlas = ExtResource( 1 )
-region = Rect2( 0, 0, 32, 32 )
-
 [sub_resource type="SpriteFrames" id=9]
 animations = [ {
-"frames": [ SubResource( 1 ), SubResource( 2 ), SubResource( 3 ), SubResource( 4 ), SubResource( 5 ), SubResource( 6 ), SubResource( 7 ) ],
-"loop": false,
-"name": "Rotation",
-"speed": 15.0
-}, {
 "frames": [ SubResource( 8 ) ],
 "loop": true,
 "name": "Idle",
 "speed": 5.0
+}, {
+"frames": [ SubResource( 1 ), SubResource( 2 ), SubResource( 3 ), SubResource( 4 ), SubResource( 5 ), SubResource( 6 ), SubResource( 7 ) ],
+"loop": false,
+"name": "Rotation",
+"speed": 15.0
 } ]
+
+[sub_resource type="AtlasTexture" id=17]
+atlas = ExtResource( 4 )
+region = Rect2( 0, 0, 16, 8 )
 
 [sub_resource type="AtlasTexture" id=10]
 atlas = ExtResource( 4 )
@@ -82,25 +82,18 @@ region = Rect2( 96, 0, 16, 8 )
 atlas = ExtResource( 4 )
 region = Rect2( 112, 0, 16, 8 )
 
-[sub_resource type="AtlasTexture" id=17]
-atlas = ExtResource( 4 )
-region = Rect2( 0, 0, 16, 8 )
-
 [sub_resource type="SpriteFrames" id=18]
 animations = [ {
-"frames": [ SubResource( 10 ), SubResource( 11 ), SubResource( 12 ), SubResource( 13 ), SubResource( 14 ), SubResource( 15 ), SubResource( 16 ) ],
-"loop": false,
-"name": "Rotation",
-"speed": 15.0
-}, {
 "frames": [ SubResource( 17 ) ],
 "loop": true,
 "name": "Idle",
 "speed": 5.0
+}, {
+"frames": [ SubResource( 10 ), SubResource( 11 ), SubResource( 12 ), SubResource( 13 ), SubResource( 14 ), SubResource( 15 ), SubResource( 16 ) ],
+"loop": false,
+"name": "Rotation",
+"speed": 15.0
 } ]
-
-[sub_resource type="CircleShape2D" id=19]
-radius = 51.031
 
 [sub_resource type="Gradient" id=20]
 offsets = PoolRealArray( 0.248756, 0.781095, 1 )
@@ -148,11 +141,64 @@ tracks/1/keys = {
 "values": [ Vector2( 0.8, 0.8 ), Vector2( 1.1, 1.1 ) ]
 }
 
+[sub_resource type="CircleShape2D" id=24]
+radius = 89.4877
+
+[sub_resource type="Animation" id=25]
+resource_name = "Collect"
+tracks/0/type = "value"
+tracks/0/path = NodePath("CollectSound:playing")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("../Particles2D:emitting")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("../CoinSprite:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("../ShadowSprite:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+
 [node name="Coin" type="Node2D"]
 script = ExtResource( 2 )
 
 [node name="CoinSprite" type="AnimatedSprite" parent="."]
-position = Vector2( 0, 1.61282 )
 frames = SubResource( 9 )
 animation = "Idle"
 __meta__ = {
@@ -162,20 +208,9 @@ __meta__ = {
 [node name="ShadowSprite" type="AnimatedSprite" parent="."]
 modulate = Color( 1, 1, 1, 0.356863 )
 position = Vector2( 0, 18 )
-scale = Vector2( 0.99032, 0.99032 )
+scale = Vector2( 0.95, 0.95 )
 frames = SubResource( 18 )
 animation = "Rotation"
-
-[node name="Area2D" type="Area2D" parent="."]
-__meta__ = {
-"_edit_lock_": true
-}
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-shape = SubResource( 19 )
-__meta__ = {
-"_edit_lock_": true
-}
 
 [node name="Particles2D" type="Particles2D" parent="."]
 emitting = false
@@ -188,12 +223,6 @@ __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="CollectSound" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource( 3 )
-__meta__ = {
-"_edit_lock_": true
-}
-
 [node name="Timer" type="Timer" parent="."]
 wait_time = 2.0
 autostart = true
@@ -201,27 +230,15 @@ autostart = true
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/Wave = SubResource( 23 )
 
-[node name="StateMachine" type="Node2D" parent="."]
-script = ExtResource( 5 )
+[node name="CollectableBehaviour" parent="." instance=ExtResource( 3 )]
 
-[node name="Spawn" type="Node" parent="StateMachine"]
-script = ExtResource( 8 )
+[node name="CollisionShape2D" parent="CollectableBehaviour/FollowArea" index="0"]
+shape = SubResource( 24 )
 
-[node name="SpawnDurationTimer" type="Timer" parent="StateMachine/Spawn"]
-wait_time = 0.2
-one_shot = true
-autostart = true
-
-[node name="Idle" type="Node" parent="StateMachine"]
-script = ExtResource( 6 )
-
-[node name="Follow" type="Node" parent="StateMachine"]
-script = ExtResource( 7 )
-
-[node name="Collect" type="Node" parent="StateMachine"]
-script = ExtResource( 6 )
+[node name="AnimationPlayer" parent="CollectableBehaviour" index="4"]
+anims/Collect = SubResource( 25 )
 
 [connection signal="animation_finished" from="CoinSprite" to="." method="_on_AnimatedSprite_animation_finished"]
-[connection signal="body_entered" from="Area2D" to="." method="_on_FollowArea_body_entered"]
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
-[connection signal="state_changed" from="StateMachine" to="." method="_on_StateMachine_state_changed"]
+
+[editable path="CollectableBehaviour"]

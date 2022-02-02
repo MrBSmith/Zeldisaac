@@ -24,6 +24,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Scenes/Actors/Enemy/Skeleton/AttackState.gd"
 }, {
+"base": "Node2D",
+"class": "Behaviour",
+"language": "GDScript",
+"path": "res://Scenes/Behaviours/Behaviour.gd"
+}, {
 "base": "Actor",
 "class": "Character",
 "language": "GDScript",
@@ -38,6 +43,11 @@ _global_script_classes=[ {
 "class": "Coin",
 "language": "GDScript",
 "path": "res://Scenes/InteractiveObjects/Coin/Coin.gd"
+}, {
+"base": "Behaviour",
+"class": "CollectableBehaviour",
+"language": "GDScript",
+"path": "res://Scenes/Behaviours/CollectableBehaviour.gd"
 }, {
 "base": "State",
 "class": "CollectableFollowState",
@@ -98,9 +108,11 @@ _global_script_class_icons={
 "Actor": "",
 "ActorMoveState": "",
 "AttackState": "",
+"Behaviour": "",
 "Character": "",
 "ChaseState": "",
 "Coin": "",
+"CollectableBehaviour": "",
 "CollectableFollowState": "",
 "CollectableSpawnState": "",
 "Door": "",
