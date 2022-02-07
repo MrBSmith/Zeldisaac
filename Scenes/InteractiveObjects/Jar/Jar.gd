@@ -20,6 +20,7 @@ func destroy() -> void:
 	
 	state = STATE.BREAKING
 	animated_sprite.play("Break")
+	$DropperBehaviour.drop_item()
 
 
 

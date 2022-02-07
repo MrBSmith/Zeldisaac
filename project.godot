@@ -64,6 +64,16 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Scenes/InteractiveObjects/Door/Door.gd"
 }, {
+"base": "Resource",
+"class": "DropWeight",
+"language": "GDScript",
+"path": "res://Scenes/InteractiveObjects/DropWeight/DropWeight.gd"
+}, {
+"base": "Behaviour",
+"class": "DropperBehaviour",
+"language": "GDScript",
+"path": "res://Scenes/Behaviours/DropperBehaviour.gd"
+}, {
 "base": "Actor",
 "class": "Enemy",
 "language": "GDScript",
@@ -73,6 +83,21 @@ _global_script_classes=[ {
 "class": "EnemyMoveState",
 "language": "GDScript",
 "path": "res://Scenes/Actors/Enemy/Skeleton/EnemyMoveState.gd"
+}, {
+"base": "Node2D",
+"class": "Item",
+"language": "GDScript",
+"path": "res://Scenes/InteractiveObjects/Item/Item.gd"
+}, {
+"base": "Resource",
+"class": "ItemData",
+"language": "GDScript",
+"path": "res://Scenes/InteractiveObjects/Item/ItemData.gd"
+}, {
+"base": "Node2D",
+"class": "ItemFactory",
+"language": "GDScript",
+"path": "res://Scenes/Levels/CoinFactory.gd"
 }, {
 "base": "Object",
 "class": "Maths",
@@ -116,8 +141,13 @@ _global_script_class_icons={
 "CollectableFollowState": "",
 "CollectableSpawnState": "",
 "Door": "",
+"DropWeight": "",
+"DropperBehaviour": "",
 "Enemy": "",
 "EnemyMoveState": "",
+"Item": "",
+"ItemData": "",
+"ItemFactory": "",
 "Maths": "",
 "Pathfinder": "",
 "State": "",
@@ -173,7 +203,7 @@ texture={
 
 block={
 "deadzone": 0.5,
-"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":0,"physical_scancode":16777238,"unicode":0,"echo":false,"script":null)
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":0,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
  ]
 }
 

@@ -1,7 +1,10 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://Scenes/InteractiveObjects/Jar/Jar_SpriteSheet.png" type="Texture" id=1]
 [ext_resource path="res://Scenes/InteractiveObjects/Jar/Jar.gd" type="Script" id=2]
+[ext_resource path="res://Scenes/Behaviours/DropperBehaviour.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Resources/DropWeight/VoidDropWeight.tres" type="Resource" id=5]
+[ext_resource path="res://Resources/DropWeight/CoinWeight.tres" type="Resource" id=6]
 
 [sub_resource type="AtlasTexture" id=1]
 atlas = ExtResource( 1 )
@@ -53,5 +56,9 @@ offset = Vector2( 0.5, -3 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 8 )
+
+[node name="DropperBehaviour" parent="." instance=ExtResource( 3 )]
+item_drop_weight_array = [ ExtResource( 5 ), ExtResource( 6 ) ]
+max_amount_dropped = 2
 
 [connection signal="animation_finished" from="AnimatedSprite" to="." method="_on_AnimatedSprite_animation_finished"]
