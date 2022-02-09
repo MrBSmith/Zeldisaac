@@ -13,4 +13,3 @@ func interact() -> void:
 
 func _on_AnimatedSprite_animation_finished() -> void:
 	state_machine.set_state("Opened")
-	$DropperBehaviour.drop_item()

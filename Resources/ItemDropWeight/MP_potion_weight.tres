@@ -1,0 +1,9 @@
+[gd_resource type="Resource" load_steps=3 format=2]
+
+[ext_resource path="res://Scenes/InteractiveObjects/Item/ItemDropWeight/ItemDropWeight.gd" type="Script" id=1]
+[ext_resource path="res://Resources/ItemData/MP_Potion.tres" type="Resource" id=2]
+
+[resource]
+script = ExtResource( 1 )
+item_data = ExtResource( 2 )
+weight = 5.0

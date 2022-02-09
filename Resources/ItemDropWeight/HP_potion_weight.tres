@@ -1,6 +1,6 @@
 [gd_resource type="Resource" load_steps=3 format=2]
 
-[ext_resource path="res://Scenes/InteractiveObjects/DropWeight/DropWeight.gd" type="Script" id=1]
+[ext_resource path="res://Scenes/InteractiveObjects/Item/ItemDropWeight/ItemDropWeight.gd" type="Script" id=1]
 [ext_resource path="res://Resources/ItemData/HP_Potion.tres" type="Resource" id=2]
 
 [resource]

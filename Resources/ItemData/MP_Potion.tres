@@ -1,0 +1,23 @@
+[gd_resource type="Resource" load_steps=6 format=2]
+
+[ext_resource path="res://Scenes/InteractiveObjects/Item/ItemData.gd" type="Script" id=1]
+[ext_resource path="res://Scenes/InteractiveObjects/Item/Sprites/InventoryItemSpriteSheet.png" type="Texture" id=2]
+[ext_resource path="res://Scenes/InteractiveObjects/Item/Sprites/WorldItemsSpriteSheet.png" type="Texture" id=3]
+
+[sub_resource type="AtlasTexture" id=1]
+atlas = ExtResource( 2 )
+region = Rect2( 32, 0, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=2]
+atlas = ExtResource( 3 )
+region = Rect2( 16, 0, 16, 16 )
+
+[resource]
+script = ExtResource( 1 )
+damage_type = 1
+damage = -5
+item_name = "Magic Potion"
+description = "Heal for 5 magic points"
+price = 10
+world_texture = SubResource( 2 )
+inventory_texture = SubResource( 1 )

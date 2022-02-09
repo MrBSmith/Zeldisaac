@@ -2,9 +2,9 @@ extends Node
 
 # warnings-disable
 
-signal spawn_item(item, pos)
+signal spawn_item(item_data, pos)
+signal spawn_special_item(item_scene, pos)
 
-signal spawn_coin(pos)
 signal object_collected(obj)
 signal nb_coins_changed(nb_coins)
 
