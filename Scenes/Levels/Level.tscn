@@ -1,4 +1,4 @@
-[gd_scene load_steps=59 format=2]
+[gd_scene load_steps=60 format=2]
 
 [ext_resource path="res://Scenes/Actors/Character/Character.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Scenes/Levels/Tilesets/Tileset.png" type="Texture" id=2]
@@ -16,6 +16,7 @@
 [ext_resource path="res://Scenes/InteractiveObjects/Door/Door.tscn" type="PackedScene" id=14]
 [ext_resource path="res://Scenes/InteractiveObjects/Item/Item.tscn" type="PackedScene" id=15]
 [ext_resource path="res://Resources/ItemData/HP_Potion.tres" type="Resource" id=16]
+[ext_resource path="res://Scenes/UI/Inventory/Inventory.gd" type="Script" id=17]
 
 [sub_resource type="ConvexPolygonShape2D" id=1]
 points = PoolVector2Array( 32, 32, 0, 32, 0, 0, 32, 0 )
@@ -552,9 +553,9 @@ margin_left = 49.0
 margin_top = 6.0
 margin_right = 134.0
 margin_bottom = 20.0
-custom_colors/font_color = Color( 0, 0, 0, 0 )
 custom_styles/fg = SubResource( 39 )
 custom_styles/bg = SubResource( 40 )
+custom_colors/font_color = Color( 0, 0, 0, 0 )
 max_value = 10.0
 step = 1.0
 value = 10.0
@@ -568,10 +569,18 @@ margin_left = 54.0
 margin_top = 19.0
 margin_right = 118.0
 margin_bottom = 33.0
-custom_colors/font_color = Color( 0, 0, 0, 0 )
 custom_styles/fg = SubResource( 41 )
 custom_styles/bg = SubResource( 42 )
+custom_colors/font_color = Color( 0, 0, 0, 0 )
 value = 100.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Inventory" type="Control" parent="UI_Container/UI"]
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 17 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
