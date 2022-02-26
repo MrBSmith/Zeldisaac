@@ -2,6 +2,9 @@ extends Node
 
 var nb_coins : int = 0 setget set_nb_coins, get_nb_coins
 
+var window_size = Vector2(ProjectSettings.get_setting("display/window/size/width"), 
+						ProjectSettings.get_setting("display/window/size/height"))
+
 
 #### ACCESSORS ####
 
