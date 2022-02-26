@@ -1,9 +1,10 @@
-[gd_resource type="Theme" load_steps=8 format=2]
+[gd_resource type="Theme" load_steps=9 format=2]
 
 [ext_resource path="res://Scenes/UI/Theme/Selection_StyleBox.tres" type="StyleBox" id=1]
 [ext_resource path="res://Scenes/UI/Font/BabaSmallPixel.tres" type="DynamicFont" id=2]
 [ext_resource path="res://Scenes/UI/Font/BabaMediumPixel.tres" type="DynamicFont" id=3]
 [ext_resource path="res://Scenes/UI/Theme/Panel_StyleBox.tres" type="StyleBox" id=4]
+[ext_resource path="res://Scenes/UI/Theme/CancelIcon.png" type="Texture" id=5]
 
 [sub_resource type="StyleBoxFlat" id=45]
 bg_color = Color( 0.6, 0.6, 0.6, 0 )
@@ -21,3 +22,6 @@ ItemList/styles/bg_focus = SubResource( 47 )
 ItemList/styles/selected = SubResource( 46 )
 ItemList/styles/selected_focus = ExtResource( 1 )
 Panel/styles/panel = ExtResource( 4 )
+WindowDialog/icons/close = ExtResource( 5 )
+WindowDialog/icons/close_highlight = ExtResource( 5 )
+WindowDialog/styles/panel = ExtResource( 4 )

@@ -9,14 +9,10 @@ signal item_removed(item_amount)
 #### BUILT-IN ####
 
 
-func _ready() -> void:
-	var __ = EVENTS.connect("object_collected", self, "_on_EVENTS_object_collected")
-
-
 
 #### LOGIC ####
 
-func _append_item(item: ItemData, amount: int = 1) -> void:
+func append_item(item: ItemData, amount: int = 1) -> void:
 	var item_amount_id = _find_item_id(item)
 	var item_amount = null
 	
@@ -30,7 +26,7 @@ func _append_item(item: ItemData, amount: int = 1) -> void:
 	emit_signal("item_added", item_amount)
 
 
-func _remove_item(item: ItemData, amount: int = 1) -> void:
+func remove_item(item: ItemData, amount: int = 1) -> void:
 	var item_amount_id = _find_item_id(item)
 	
 	if item_amount_id == -1:
@@ -68,12 +64,5 @@ func _print_inventory() -> void:
 #### INPUTS ####
 
 
-
-
 #### SIGNAL RESPONSES ####
-
-func _on_EVENTS_object_collected(obj: Object) -> void:
-	if obj is Item:
-		_append_item(obj.item_data)
-
 

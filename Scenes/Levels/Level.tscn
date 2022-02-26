@@ -600,7 +600,6 @@ anchor_bottom = 1.0
 margin_right = 195.0
 script = ExtResource( 22 )
 __meta__ = {
-"_edit_group_": true,
 "_edit_lock_": true,
 "_edit_use_anchors_": false
 }
@@ -669,5 +668,7 @@ item_data = ExtResource( 16 )
 position = Vector2( 432.5, 80 )
 item_data = ExtResource( 20 )
 
+[connection signal="confirm" from="UI_Container/UI/Inventory" to="UI_Container/UI/Inventory/Panel/VBoxContainer/ItemList" method="_on_Inventory_confirm"]
+[connection signal="use_item_query" from="UI_Container/UI/Inventory/Panel/VBoxContainer/ItemList" to="UI_Container/UI/Inventory" method="_on_ItemList_use_item_query"]
 [connection signal="item_added" from="UI_Container/UI/Inventory/DataManager" to="UI_Container/UI/Inventory/Panel/VBoxContainer/ItemList" method="_on_DataManager_item_added"]
 [connection signal="item_removed" from="UI_Container/UI/Inventory/DataManager" to="UI_Container/UI/Inventory/Panel/VBoxContainer/ItemList" method="_on_DataManager_item_removed"]

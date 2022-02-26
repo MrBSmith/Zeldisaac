@@ -1,5 +1,7 @@
 extends ItemList
 
+signal use_item_query(item_data)
+
 
 #### ACCESSORS ####
 
@@ -23,9 +25,14 @@ func update_item_display(item_amount: ItemAmount) -> void:
 			return
 		else:
 			add_item(item_text, item_amount.item.inventory_texture)
-			set_item_metadata(get_item_count() - 1, item_amount)
+			item_id = get_item_count() - 1
+			set_item_tooltip(item_id, item_amount.item.description)
+			set_item_metadata(item_id, item_amount)
 	else:
-		set_item_text(item_id, item_text)
+		if item_amount.amount <= 0:
+			remove_item(item_id)
+		else:
+			set_item_text(item_id, item_text)
 
 
 func _find_item_in_list(item_amount: ItemAmount) -> int:
@@ -38,6 +45,8 @@ func _find_item_in_list(item_amount: ItemAmount) -> int:
 #### INPUTS ####
 
 
+
+
 #### SIGNAL RESPONSES ####
 
 
@@ -47,3 +56,10 @@ func _on_DataManager_item_added(item_amount) -> void:
 
 func _on_DataManager_item_removed(item_amount) -> void:
 	update_item_display(item_amount)
+
+
+func _on_Inventory_confirm() -> void:
+	for id in get_selected_items():
+		var item_amount = get_item_metadata(id)
+		var item_data = item_amount.item
+		emit_signal("use_item_query", item_data)
