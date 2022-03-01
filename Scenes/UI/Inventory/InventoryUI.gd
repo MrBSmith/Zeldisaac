@@ -2,7 +2,6 @@ extends ItemList
 
 signal use_item_query(item_data)
 
-
 #### ACCESSORS ####
 
 
@@ -45,6 +44,21 @@ func _find_item_in_list(item_amount: ItemAmount) -> int:
 #### INPUTS ####
 
 
+func _gui_input(event: InputEvent) -> void:
+	var selected_items = get_selected_items()
+	var index = selected_items[0] if !selected_items.empty() else -1
+	
+	var event_text = event.as_text()
+
+	if event_text in ["Down", "Up"]:
+		if event.is_action_pressed("ui_down"):
+			index += 1
+		elif event.is_action_pressed("ui_up"):
+			index -= 1
+		
+		index = wrapi(index, 0, get_item_count())
+		select(index)
+		accept_event()
 
 
 #### SIGNAL RESPONSES ####
@@ -63,3 +77,15 @@ func _on_Inventory_confirm() -> void:
 		var item_amount = get_item_metadata(id)
 		var item_data = item_amount.item
 		emit_signal("use_item_query", item_data)
+
+
+func _on_Inventory_animation_finished(hidden: bool) -> void:
+	if hidden:
+		release_focus()
+
+
+func _on_Inventory_hidden_changed(hidden: bool) -> void:
+	if !hidden && get_item_count() > 0:
+		grab_focus()
+		select(0)
+

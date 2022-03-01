@@ -3,7 +3,7 @@ class_name Inventory
 
 var hidden := true setget set_hidden, is_hidden
 
-onready var item_list = $Panel/VBoxContainer/ItemList
+onready var item_list = $Panel/Container/ItemList
 onready var data_manager = $DataManager
 onready var tween = $Tween
 onready var hidden_position = Vector2(GAME.window_size.x, margin_top)
@@ -12,6 +12,7 @@ onready var visible_position = hidden_position - Vector2(rect_size.x + margin_le
 signal cancel()
 signal confirm()
 signal hidden_changed()
+signal animation_finished(hidden)
 
 #### ACCESSORS ####
 
@@ -37,6 +38,9 @@ func _animation(appear: bool) -> void:
 	
 	tween.interpolate_property(self, "rect_position", from, to, 0.5, Tween.TRANS_CUBIC)
 	tween.start()
+	
+	yield(tween, "tween_all_completed")
+	emit_signal("animation_finished", hidden)
 
 
 func use_item(item_data: ItemData) -> void:
@@ -63,6 +67,7 @@ func _input(_event: InputEvent) -> void:
 
 func _on_hidden_changed(_value: bool) -> void:
 	_animation(!hidden)
+	EVENTS.emit_signal("menu_focus_mode", !hidden)
 
 
 func _on_ItemList_use_item_query(item_data: ItemData) -> void:

@@ -144,6 +144,16 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://StateMachine/StateMachine.gd"
 }, {
+"base": "Control",
+"class": "UI",
+"language": "GDScript",
+"path": "res://Scenes/Levels/UI.gd"
+}, {
+"base": "Control",
+"class": "Veil",
+"language": "GDScript",
+"path": "res://Scenes/Levels/Veil.gd"
+}, {
 "base": "StateMachine",
 "class": "WanderState",
 "language": "GDScript",
@@ -177,6 +187,8 @@ _global_script_class_icons={
 "State": "",
 "StateLabel": "",
 "StateMachine": "",
+"UI": "",
+"Veil": "",
 "WanderState": ""
 }
 

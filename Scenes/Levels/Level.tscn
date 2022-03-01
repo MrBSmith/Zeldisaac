@@ -1,4 +1,4 @@
-[gd_scene load_steps=64 format=2]
+[gd_scene load_steps=66 format=2]
 
 [ext_resource path="res://Scenes/Actors/Character/Character.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Scenes/Levels/Tilesets/Tileset.png" type="Texture" id=2]
@@ -20,7 +20,9 @@
 [ext_resource path="res://Scenes/UI/Inventory/InventoryUI.gd" type="Script" id=18]
 [ext_resource path="res://Scenes/UI/Theme/UI_MainTheme.tres" type="Theme" id=19]
 [ext_resource path="res://Resources/ItemData/MP_Potion.tres" type="Resource" id=20]
+[ext_resource path="res://Scenes/Levels/Veil.gd" type="Script" id=21]
 [ext_resource path="res://Scenes/UI/Inventory/Inventory.gd" type="Script" id=22]
+[ext_resource path="res://Scenes/Levels/UI.gd" type="Script" id=23]
 
 [sub_resource type="ConvexPolygonShape2D" id=1]
 points = PoolVector2Array( 32, 32, 0, 32, 0, 0, 32, 0 )
@@ -512,13 +514,37 @@ position = Vector2( 321, 181 )
 [node name="UI_Container" type="CanvasLayer" parent="."]
 
 [node name="UI" type="Control" parent="UI_Container"]
+pause_mode = 2
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme = ExtResource( 19 )
+script = ExtResource( 23 )
 __meta__ = {
 "_edit_lock_": true,
 "_edit_use_anchors_": false
 }
+
+[node name="Veil" type="Control" parent="UI_Container/UI"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource( 21 )
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="UI_Container/UI/Veil"]
+light_mask = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color( 0, 0, 0, 0 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Tween" type="Tween" parent="UI_Container/UI/Veil"]
 
 [node name="HUD" type="TextureRect" parent="UI_Container/UI"]
 light_mask = 0
@@ -598,9 +624,10 @@ anchor_left = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_right = 195.0
+mouse_filter = 2
 script = ExtResource( 22 )
 __meta__ = {
-"_edit_lock_": true,
+"_edit_group_": true,
 "_edit_use_anchors_": false
 }
 
@@ -615,24 +642,25 @@ __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="VBoxContainer" type="Control" parent="UI_Container/UI/Inventory/Panel"]
+[node name="Container" type="Control" parent="UI_Container/UI/Inventory/Panel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 8.0
 margin_top = 8.0
 margin_right = -8.0
 margin_bottom = -8.0
+mouse_filter = 2
 __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="Label" type="Label" parent="UI_Container/UI/Inventory/Panel/VBoxContainer"]
+[node name="Label" type="Label" parent="UI_Container/UI/Inventory/Panel/Container"]
 margin_right = 169.0
 margin_bottom = 16.0
 text = "Inventory"
 align = 1
 
-[node name="ItemList" type="ItemList" parent="UI_Container/UI/Inventory/Panel/VBoxContainer"]
+[node name="ItemList" type="ItemList" parent="UI_Container/UI/Inventory/Panel/Container"]
 anchor_top = 0.072
 anchor_right = 1.0
 anchor_bottom = 0.072
@@ -668,7 +696,9 @@ item_data = ExtResource( 16 )
 position = Vector2( 432.5, 80 )
 item_data = ExtResource( 20 )
 
-[connection signal="confirm" from="UI_Container/UI/Inventory" to="UI_Container/UI/Inventory/Panel/VBoxContainer/ItemList" method="_on_Inventory_confirm"]
-[connection signal="use_item_query" from="UI_Container/UI/Inventory/Panel/VBoxContainer/ItemList" to="UI_Container/UI/Inventory" method="_on_ItemList_use_item_query"]
-[connection signal="item_added" from="UI_Container/UI/Inventory/DataManager" to="UI_Container/UI/Inventory/Panel/VBoxContainer/ItemList" method="_on_DataManager_item_added"]
-[connection signal="item_removed" from="UI_Container/UI/Inventory/DataManager" to="UI_Container/UI/Inventory/Panel/VBoxContainer/ItemList" method="_on_DataManager_item_removed"]
+[connection signal="animation_finished" from="UI_Container/UI/Inventory" to="UI_Container/UI/Inventory/Panel/Container/ItemList" method="_on_Inventory_animation_finished"]
+[connection signal="confirm" from="UI_Container/UI/Inventory" to="UI_Container/UI/Inventory/Panel/Container/ItemList" method="_on_Inventory_confirm"]
+[connection signal="hidden_changed" from="UI_Container/UI/Inventory" to="UI_Container/UI/Inventory/Panel/Container/ItemList" method="_on_Inventory_hidden_changed"]
+[connection signal="use_item_query" from="UI_Container/UI/Inventory/Panel/Container/ItemList" to="UI_Container/UI/Inventory" method="_on_ItemList_use_item_query"]
+[connection signal="item_added" from="UI_Container/UI/Inventory/DataManager" to="UI_Container/UI/Inventory/Panel/Container/ItemList" method="_on_DataManager_item_added"]
+[connection signal="item_removed" from="UI_Container/UI/Inventory/DataManager" to="UI_Container/UI/Inventory/Panel/Container/ItemList" method="_on_DataManager_item_removed"]
