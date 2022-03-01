@@ -1,85 +1,51 @@
 extends Control
 class_name Inventory
 
-var item_list : Array = []
+onready var tween = $Tween
+onready var panel = $Panel
+onready var hidden_position = rect_position
+onready var visible_position = hidden_position - panel.rect_size * Vector2.RIGHT
 
-class ItemAmount:
-	var amount : int = 0
-	var item : ItemData = null
-	
-	func _init(_amount: int, _item: ItemData) -> void:
-		amount = _amount
-		item = _item
+var hidden := true setget set_hidden, is_hidden
+
+signal hidden_changed(value)
+
+
+#### ACCESSORS ####
+
+func set_hidden(value: bool) -> void:
+	if value != hidden:
+		hidden = value
+		emit_signal("hidden_changed", hidden)
+func is_hidden() -> bool: return hidden
 
 
 #### BUILT-IN ####
 
-
 func _ready() -> void:
-	var __ = EVENTS.connect("object_collected", self, "_on_EVENTS_object_collected")
+	var __ = connect("hidden_changed", self, "_on_hidden_changed")
 
 
 
 #### LOGIC ####
 
-func _append_item(item: ItemData, amount: int = 1) -> void:
-	var item_amount_id = _find_item_id(item)
+func _animation(appear: bool) -> void:
+	var from = rect_position
+	var to = visible_position if appear else hidden_position
 	
-	if item_amount_id == -1:
-		item_list.append(ItemAmount.new(amount, item))
-	else:
-		item_list[item_amount_id].amount += amount
-
-
-
-func _remove_item(item: ItemData, amount: int = 1) -> void:
-	var item_amount_id = _find_item_id(item)
-	
-	if item_amount_id == -1:
-		push_error("%s could not be removed from the list. No itemAmount corresponding was found" % item.item_name)
-	else:
-		item_list[item_amount_id].amount -= amount
-		if item_list[item_amount_id].amount <= 0:
-			item_list.remove(item_amount_id)
-
-
-
-# Finds the position of the ItemAmount corresponding to the given item in the item_list
-# and returns its id, if no ItemAmount corresponds to it return -1
-func _find_item_id(item: ItemData) -> int:
-	for i in range(item_list.size()):
-		var item_amount = item_list[i]
-		if item_amount.item == item:
-			return i
-	return -1
-
-
-
-func _print_inventory() -> void:
-	print("--- INVENTORY CONTENT ---")
-	print(" ")
-	
-	for item_amount in item_list:
-		print(item_amount.item.item_name + " : " + String(item_amount.amount))
-	
-	print(" ")
-	print("------")
+	tween.interpolate_property(self, "rect_position", from, to, 0.7, Tween.TRANS_CUBIC)
+	tween.start()
 
 
 #### INPUTS ####
 
 func _input(_event: InputEvent) -> void:
 	if Input.is_action_just_pressed("inventory"):
-		_print_inventory()
+		set_hidden(!hidden)
+
 
 
 #### SIGNAL RESPONSES ####
 
-func _on_EVENTS_object_collected(obj: Object) -> void:
-	if obj is Item:
-		_append_item(obj.item_data)
-
-
-
-
-
+func _on_hidden_changed(_value: bool) -> void:
+	_animation(!hidden)
