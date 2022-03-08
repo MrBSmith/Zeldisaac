@@ -1,4 +1,4 @@
-[gd_scene load_steps=62 format=2]
+[gd_scene load_steps=65 format=2]
 
 [ext_resource path="res://Scenes/Actors/Character/Character.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Scenes/Levels/Tilesets/Tileset.png" type="Texture" id=2]
@@ -7,7 +7,7 @@
 [ext_resource path="res://Scenes/Actors/Enemy/Skeleton/Skeleton.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Scenes/UI/HUD/HUD.png" type="Texture" id=6]
 [ext_resource path="res://Scenes/UI/HUD/Portrait.png" type="Texture" id=7]
-[ext_resource path="res://Scenes/UI/Font/BabaMediumPixels.ttf" type="DynamicFontData" id=8]
+[ext_resource path="res://Themes/Font/BabaMediumPixels.ttf" type="DynamicFontData" id=8]
 [ext_resource path="res://Scenes/UI/HUD/HUD_Mask.png" type="Texture" id=9]
 [ext_resource path="res://Scenes/UI/HUD/HUD.gd" type="Script" id=10]
 [ext_resource path="res://Scenes/Levels/ItemFactory.gd" type="Script" id=11]
@@ -19,6 +19,9 @@
 [ext_resource path="res://Scenes/UI/Inventory/InventoryDataManager.gd" type="Script" id=17]
 [ext_resource path="res://Scenes/UI/Inventory/Inventory.gd" type="Script" id=18]
 [ext_resource path="res://Scenes/UI/Inventory/InventoryItemList.gd" type="Script" id=19]
+[ext_resource path="res://Themes/MainTheme.tres" type="Theme" id=20]
+[ext_resource path="res://Resources/ItemData/MP_Potion.tres" type="Resource" id=21]
+[ext_resource path="res://Scenes/UI/BlackVeil.gd" type="Script" id=22]
 
 [sub_resource type="ConvexPolygonShape2D" id=1]
 points = PoolVector2Array( 32, 32, 0, 32, 0, 0, 32, 0 )
@@ -499,8 +502,10 @@ position = Vector2( 272, 112 )
 [node name="UI_Container" type="CanvasLayer" parent="."]
 
 [node name="UI" type="Control" parent="UI_Container"]
+pause_mode = 2
 anchor_right = 1.0
 anchor_bottom = 1.0
+theme = ExtResource( 20 )
 __meta__ = {
 "_edit_lock_": true,
 "_edit_use_anchors_": false
@@ -579,6 +584,19 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="BlackVeil" type="ColorRect" parent="UI_Container/UI"]
+light_mask = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0, 0, 0, 0 )
+script = ExtResource( 22 )
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="Tween" type="Tween" parent="UI_Container/UI/BlackVeil"]
+
 [node name="Inventory" type="Control" parent="UI_Container/UI"]
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -596,21 +614,23 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 margin_right = 176.0
 __meta__ = {
-"_edit_lock_": true,
 "_edit_use_anchors_": false
 }
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI_Container/UI/Inventory/Panel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+margin_left = 8.0
+margin_top = 8.0
+margin_right = -8.0
+margin_bottom = -8.0
 __meta__ = {
-"_edit_lock_": true,
 "_edit_use_anchors_": false
 }
 
 [node name="Label" type="Label" parent="UI_Container/UI/Inventory/Panel/VBoxContainer"]
-margin_right = 176.0
-margin_bottom = 14.0
+margin_right = 160.0
+margin_bottom = 16.0
 text = "Inventory"
 align = 1
 valign = 1
@@ -619,9 +639,10 @@ __meta__ = {
 }
 
 [node name="ItemList" type="ItemList" parent="UI_Container/UI/Inventory/Panel/VBoxContainer"]
-margin_top = 18.0
-margin_right = 176.0
-margin_bottom = 360.0
+margin_top = 20.0
+margin_right = 160.0
+margin_bottom = 344.0
+rect_clip_content = false
 size_flags_vertical = 3
 script = ExtResource( 19 )
 
@@ -637,12 +658,18 @@ position = Vector2( 496, 144 )
 position = Vector2( 512, 32 )
 
 [node name="Item" parent="." instance=ExtResource( 15 )]
-position = Vector2( 592, 400 )
+position = Vector2( 688, 432 )
 item_data = ExtResource( 16 )
+
+[node name="Item3" parent="." instance=ExtResource( 15 )]
+position = Vector2( 151, 269 )
+item_data = ExtResource( 21 )
 
 [node name="Item2" parent="." instance=ExtResource( 15 )]
 position = Vector2( 304, 464 )
 item_data = ExtResource( 16 )
 
+[connection signal="hidden_changed" from="UI_Container/UI/Inventory" to="UI_Container/UI/BlackVeil" method="_on_Inventory_hidden_changed"]
+[connection signal="hidden_changed" from="UI_Container/UI/Inventory" to="UI_Container/UI/Inventory/Panel/VBoxContainer/ItemList" method="_on_Inventory_hidden_changed"]
 [connection signal="item_added" from="UI_Container/UI/Inventory/InventoryDataManager" to="UI_Container/UI/Inventory/Panel/VBoxContainer/ItemList" method="_on_InventoryDataManager_item_added"]
 [connection signal="item_removed" from="UI_Container/UI/Inventory/InventoryDataManager" to="UI_Container/UI/Inventory/Panel/VBoxContainer/ItemList" method="_on_InventoryDataManager_item_removed"]
