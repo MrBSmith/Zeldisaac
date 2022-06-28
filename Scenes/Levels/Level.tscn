@@ -662,7 +662,7 @@ position = Vector2( 688, 432 )
 item_data = ExtResource( 16 )
 
 [node name="Item3" parent="." instance=ExtResource( 15 )]
-position = Vector2( 151, 269 )
+position = Vector2( 144, 144 )
 item_data = ExtResource( 21 )
 
 [node name="Item2" parent="." instance=ExtResource( 15 )]
