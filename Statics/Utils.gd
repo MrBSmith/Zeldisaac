@@ -42,3 +42,12 @@ static func fetch(node: Node, wanted_class: String) -> Array:
 		if child.is_class(wanted_class):
 			array.append(child)
 	return array
+
+
+static func get_adjacents(cell: Vector2) -> PoolVector2Array:
+	var adjacents = PoolVector2Array()
+	for dir in DIRECTIONS_4.values():
+		adjacents.append(cell + dir)
+	
+	return adjacents
+

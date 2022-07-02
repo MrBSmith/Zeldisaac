@@ -9,11 +9,23 @@ enum CELL_TYPE{
 export var delay_btw_steps = 0.5
 
 onready var automatas_array : Array = Utils.fetch(self, "CellularAutomata")
+onready var tilemap = $TileMap
 
-export var grid_size = Vector2(7, 7)
+export var grid_size = Vector2(10, 10)
 var grid : Array
 
 var generation_ungoing : bool = false
+
+var cell_distance_array = []
+
+class CellDistance:
+	var cell := Vector2.INF
+	var dist : int = -1
+	
+	func _init(_cell: Vector2, _dist: int) -> void:
+		cell = _cell
+		dist = _dist
+
 
 #### ACCESSORS ####
 
@@ -33,44 +45,144 @@ func _ready() -> void:
 
 #### LOGIC ####
 
-
 func generate_dungeon() -> void:
 	generation_ungoing = true
+	
+	automatas_array = []
+	cell_distance_array = []
 	init_grid()
 	
-	generate_automatas([Vector2(0, 3)])
-	
-	while(!automatas_array.empty()):
-		if delay_btw_steps > 0.0:
-			yield(get_tree().create_timer(delay_btw_steps), "timeout")
+	while(get_dungeon_depth() < 6):
+		init_grid()
+		automatas_array = []
+		cell_distance_array = []
+		var start_cell = rdm_border_grid_cell()
+		generate_automata(start_cell, 5, 4)
+		
+		while(!automatas_array.empty()):
+			if delay_btw_steps > 0.0:
+				yield(get_tree().create_timer(delay_btw_steps), "timeout")
 
-		for automata in automatas_array:
-			var adjacents_cells = get_reachable_cells(automata.cell)
-			automata.step(adjacents_cells)
+			for automata in automatas_array:
+				var adjacents_cells = get_reachable_cells(automata.cell)
+				automata.step(adjacents_cells)
+		
+		compute_cell_distances(start_cell)
+	
+	update_cell_distance_display()
 	
 	generation_ungoing = false
 
 
-func generate_automatas(start_cell_array: PoolVector2Array) -> void:
-	automatas_array = []
-	var max_steps = int(grid_size.x * grid_size.y / 3)
+func get_dungeon_depth() -> int:
+	var max_depth = 0
+	for cell_dist in cell_distance_array:
+		if cell_dist.dist > max_depth:
+			max_depth = cell_dist.dist
+	return max_depth
+
+
+func compute_cell_distances(cell: Vector2, distance: int = 0) -> void:
+	if cell_distance_array.empty():
+		cell_distance_append_cell(cell, 0)
 	
-	for cell in start_cell_array:
-		var automata = CellularAutomata.new()
+	distance += 1
+	
+	var adjacents = Utils.get_adjacents(cell)
+	
+	for adj in adjacents:
+		var tile_id = tilemap.get_cell(adj.x, adj.y)
 		
-		add_child(automata)
+		if tile_id != -1 or !is_inside_grid(adj):
+			continue
+			
+		var cell_dist = get_cell_dist(adj)
 		
-		if !automata.is_inside_tree():
-			yield(automata, "ready")
+		if cell_dist == null:
+			cell_distance_append_cell(adj, distance)
+			compute_cell_distances(adj, distance)
 		
-		automata.max_steps = max_steps
+		elif cell_dist.dist > distance:
+			cell_dist.dist = distance
+			compute_cell_distances(adj, distance)
+
+
+func get_cell_dist(cell: Vector2) -> CellDistance:
+	for cell_dist in cell_distance_array:
+		if cell_dist.cell.is_equal_approx(cell):
+			return cell_dist
+	return null
+
+
+func cell_distance_append_cell(cell: Vector2, dist: int) -> void:
+	var cell_dist = CellDistance.new(cell, dist)
+	cell_distance_array.append(cell_dist)
+
+
+func cell_distance_has_cell(cell: Vector2) -> bool:
+	for cell_dist in cell_distance_array:
+		if cell_dist.cell.is_equal_approx(cell):
+			return true
+	return false 
+
+
+func update_cell_distance_display() -> void:
+	clear_cell_distance_display()
+	
+	if $CellDistances.get_child_count() > 0:
+		var last_child_id = $CellDistances.get_child_count() - 1
+		yield($CellDistances.get_child(last_child_id), "tree_exited")
+	
+	for cell_dist in cell_distance_array:
+		var label = Label.new()
+		label.set_text(str(cell_dist.dist))
+		label.align = Label.ALIGN_CENTER
+		var pos = cell_dist.cell * tilemap.cell_size * tilemap.scale
+		label.set_position(pos)
 		
-		var __ = automata.connect("moved", self, "_on_automata_moved")
-		automata.connect("arrived", self, "_on_automata_arrived", [automata])
-		
-		automata.set_cell(cell)
-		
-		automatas_array.append(automata)
+		$CellDistances.add_child(label)
+
+
+func clear_cell_distance_display() -> void:
+	for child in $CellDistances.get_children():
+		child.queue_free()
+
+
+func rdm_grid_cell() -> Vector2:
+	return Vector2(randi() % int(grid_size.x), 
+					randi() % int(grid_size.y))
+
+
+func rdm_border_grid_cell() -> Vector2:
+	var rdm_cell = rdm_grid_cell()
+	if randi() % 2 == 1:
+		rdm_cell.x = randi() % 2 * (grid_size.x - 1)
+	else:
+		rdm_cell.y = randi() % 2 * (grid_size.y - 1)
+	return rdm_cell
+
+
+func check_dungeon_validity() -> void:
+	pass
+
+
+func generate_automata(start_cell: Vector2, max_steps : int = 15, sub_automatas: int = 0) -> void:
+	var automata = CellularAutomata.new()
+	automata.max_steps = max_steps
+	automata.sub_automatas = sub_automatas
+	
+	add_child(automata)
+	
+	if !automata.is_inside_tree():
+		yield(automata, "ready")
+	
+	var __ = automata.connect("moved", self, "_on_automata_moved")
+	automata.connect("arrived", self, "_on_automata_arrived", [automata])
+	automata.connect("sub_automata_creation", self, "_on_automata_sub_automata_creation")
+	
+	automata.set_cell(start_cell)
+	
+	automatas_array.append(automata)
 
 
 func init_grid() -> void:
@@ -127,3 +239,7 @@ func _on_automata_moved(cell: Vector2) -> void:
 func _on_automata_arrived(automata: CellularAutomata) -> void:
 	automatas_array.erase(automata)
 	automata.queue_free()
+
+
+func _on_automata_sub_automata_creation(cell: Vector2, max_steps: int, sub_automatas: int) -> void:
+	generate_automata(cell, max_steps, sub_automatas)
