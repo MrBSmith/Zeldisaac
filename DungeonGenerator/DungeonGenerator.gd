@@ -18,6 +18,9 @@ var generation_ungoing : bool = false
 
 var cell_distance_array = []
 
+var entry_cell := Vector2.INF
+var exit_cell := Vector2.INF
+
 class CellDistance:
 	var cell := Vector2.INF
 	var dist : int = -1
@@ -56,8 +59,8 @@ func generate_dungeon() -> void:
 		init_grid()
 		automatas_array = []
 		cell_distance_array = []
-		var start_cell = rdm_border_grid_cell()
-		generate_automata(start_cell, 5, 4)
+		entry_cell = rdm_border_grid_cell()
+		generate_automata(entry_cell, 5, 4)
 		
 		while(!automatas_array.empty()):
 			if delay_btw_steps > 0.0:
@@ -67,9 +70,10 @@ func generate_dungeon() -> void:
 				var adjacents_cells = get_reachable_cells(automata.cell)
 				automata.step(adjacents_cells)
 		
-		compute_cell_distances(start_cell)
+		compute_cell_distances(entry_cell)
 	
 	update_cell_distance_display()
+	place_entry_and_exit()
 	
 	generation_ungoing = false
 
@@ -80,6 +84,30 @@ func get_dungeon_depth() -> int:
 		if cell_dist.dist > max_depth:
 			max_depth = cell_dist.dist
 	return max_depth
+
+
+func place_entry_and_exit() -> void:
+	for child in $EntryExitCells.get_children():
+		child.queue_free()
+	
+	var furtherest_cells = get_furtherest_cells()
+	exit_cell = furtherest_cells[randi() % furtherest_cells.size()]
+	
+	var entry_tile_id = tilemap.tile_set.find_tile_by_name("Entry")
+	var exit_tile_id = tilemap.tile_set.find_tile_by_name("Exit")
+	
+	tilemap.set_cellv(entry_cell, entry_tile_id)
+	tilemap.set_cellv(exit_cell, exit_tile_id)
+
+
+func get_furtherest_cells() -> PoolVector2Array:
+	var dungeon_depth = get_dungeon_depth()
+	var cells_array = PoolVector2Array()
+	
+	for cell_dist in cell_distance_array:
+		if cell_dist.dist == dungeon_depth:
+			cells_array.append(cell_dist.cell)
+	return cells_array
 
 
 func compute_cell_distances(cell: Vector2, distance: int = 0) -> void:
