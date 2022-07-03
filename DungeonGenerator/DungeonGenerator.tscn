@@ -74,3 +74,10 @@ anchor_bottom = 1.0
 [node name="Rooms" type="Control" parent="."]
 margin_right = 40.0
 margin_bottom = 40.0
+
+[node name="Doors" type="Control" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_lock_": true
+}

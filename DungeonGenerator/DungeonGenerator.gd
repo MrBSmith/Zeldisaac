@@ -6,12 +6,13 @@ enum CELL_TYPE{
 	WALL
 }
 
-export var delay_btw_steps = 0.5
-
 onready var automatas_array : Array = Utils.fetch(self, "CellularAutomata")
 onready var tilemap = $TileMap
 
+export var delay_btw_steps = 0.5
+export var room_types = []
 export var grid_size = Vector2(10, 10)
+
 var grid : Array
 
 var generation_ungoing : bool = false
@@ -20,11 +21,10 @@ var dungeon_cells = []
 var free_cells = []
 var cell_distance_array = []
 var rooms_array = []
+var doors_array = []
 
 var entry_cell := Vector2.INF
 var exit_cell := Vector2.INF
-
-export var room_types = []
 
 class CellDistance:
 	var cell := Vector2.INF
@@ -33,6 +33,14 @@ class CellDistance:
 	func _init(_cell: Vector2, _dist: int) -> void:
 		cell = _cell
 		dist = _dist
+
+class DungeonDoor:
+	var from : Vector2
+	var to : Vector2
+	
+	func _init(from_cell: Vector2, to_cell: Vector2) -> void:
+		from = from_cell
+		to = to_cell
 
 
 #### ACCESSORS ####
@@ -53,18 +61,45 @@ func _ready() -> void:
 
 #### LOGIC ####
 
+func find_path_to_exit(cell: Vector2 = exit_cell, path: Array = [exit_cell]) -> Array:
+	var adjacents = Utils.get_adjacents(cell)
+	var cell_dist_array = []
+	
+	for cell_dist in cell_distance_array:
+		if cell_dist.cell in adjacents:
+			cell_dist_array.append(cell_dist)
+	
+	var closest_cell = find_smallest_dist_cell(cell_dist_array)
+	 
+	path.append(closest_cell)
+	
+	if closest_cell != entry_cell:
+		var __ = find_path_to_exit(closest_cell, path)
+	else:
+		path.invert()
+	
+	return path
+
+
+func find_smallest_dist_cell(cell_dist_array: Array) -> Vector2:
+	var smallest_dist = INF
+	var closest_cell = Vector2.INF
+	for cell_dist in cell_dist_array:
+		if cell_dist.dist < smallest_dist:
+			smallest_dist = cell_dist.dist
+			closest_cell = cell_dist.cell
+	return closest_cell
+
+
 func generate_dungeon() -> void:
 	generation_ungoing = true
-	
-	rooms_array = []
-	free_cells = []
-	automatas_array = []
 	cell_distance_array = []
-	dungeon_cells = []
+	
 	init_grid()
 	
-	while(get_dungeon_depth() < 6):
+	while(get_dungeon_depth() < 6 or cell_distance_array.empty()):
 		init_grid()
+		doors_array = []
 		rooms_array = []
 		free_cells = []
 		automatas_array = []
@@ -91,7 +126,53 @@ func generate_dungeon() -> void:
 	place_every_rooms()
 	update_room_display()
 	
+	var path = find_path_to_exit()
+	
+	place_doors_along_path(path)
+	update_doors_display()
+	
 	generation_ungoing = false
+
+
+func place_doors_along_path(path: Array) -> void:
+	var previous_room = null
+	
+	for i in range(path.size()):
+		var cell = path[i]
+		var current_room = cell_get_room(cell)
+		
+		if previous_room != null && current_room != previous_room:
+			place_door(path[i - 1], cell)
+		
+		previous_room = current_room
+
+
+func place_door(from: Vector2, to: Vector2) -> void:
+	var door = DungeonDoor.new(from, to)
+	doors_array.append(door)
+
+
+func update_doors_display() -> void:
+	Utils.clear($Doors)
+	
+	for door in doors_array:
+		var color_rect = ColorRect.new()
+		var door_rect_size = Vector2.ONE * 4
+		
+		var cell_size = tilemap.cell_size * tilemap.scale
+		var pos = ((door.to + door.from) / 2.0) * cell_size + (cell_size / 2.0)
+		
+		color_rect.set_size(door_rect_size)
+		color_rect.set_position(pos)
+		color_rect.color = Color.black
+		$Doors.add_child(color_rect)
+
+
+func cell_get_room(cell: Vector2) -> DungeonRoom:
+	for room in rooms_array:
+		if room.is_cell_inside(cell):
+			return room
+	return null
 
 
 func get_dungeon_depth() -> int:
@@ -131,13 +212,8 @@ func place_every_rooms() -> void:
 			place_room(room_slot_cell, room)
 
 
-func clear_room_display() -> void:
-	for child in $Rooms.get_children():
-		child.queue_free()
-
-
 func update_room_display() -> void:
-	clear_room_display()
+	Utils.clear($Rooms)
 	
 	for room in rooms_array:
 		for j in range(room.matrix.size()):
@@ -245,7 +321,7 @@ func cell_distance_has_cell(cell: Vector2) -> bool:
 
 
 func update_cell_distance_display() -> void:
-	clear_cell_distance_display()
+	Utils.clear($CellDistances)
 	
 	if $CellDistances.get_child_count() > 0:
 		var last_child_id = $CellDistances.get_child_count() - 1
@@ -259,11 +335,6 @@ func update_cell_distance_display() -> void:
 		label.set_position(pos)
 		
 		$CellDistances.add_child(label)
-
-
-func clear_cell_distance_display() -> void:
-	for child in $CellDistances.get_children():
-		child.queue_free()
 
 
 func rdm_grid_cell() -> Vector2:

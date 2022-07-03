@@ -21,6 +21,12 @@ func get_class() -> String: return "DungeonRoom"
 
 #### LOGIC ####
 
+func is_cell_inside(c: Vector2) -> bool:
+	for j in range(matrix.size()):
+		for i in range(matrix[j].size()):
+			if c.is_equal_approx(cell + Vector2(i, j)):
+				return true
+	return false
 
 
 #### INPUTS ####

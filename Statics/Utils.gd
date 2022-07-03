@@ -44,6 +44,11 @@ static func fetch(node: Node, wanted_class: String) -> Array:
 	return array
 
 
+static func clear(node: Node) -> void:
+	for child in node.get_children():
+		child.queue_free()
+
+
 static func get_adjacents(cell: Vector2) -> PoolVector2Array:
 	var adjacents = PoolVector2Array()
 	for dir in DIRECTIONS_4.values():
