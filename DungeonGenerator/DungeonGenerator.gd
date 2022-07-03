@@ -16,10 +16,15 @@ var grid : Array
 
 var generation_ungoing : bool = false
 
+var dungeon_cells = []
+var free_cells = []
 var cell_distance_array = []
+var rooms_array = []
 
 var entry_cell := Vector2.INF
 var exit_cell := Vector2.INF
+
+export var room_types = []
 
 class CellDistance:
 	var cell := Vector2.INF
@@ -51,14 +56,20 @@ func _ready() -> void:
 func generate_dungeon() -> void:
 	generation_ungoing = true
 	
+	rooms_array = []
+	free_cells = []
 	automatas_array = []
 	cell_distance_array = []
+	dungeon_cells = []
 	init_grid()
 	
 	while(get_dungeon_depth() < 6):
 		init_grid()
+		rooms_array = []
+		free_cells = []
 		automatas_array = []
 		cell_distance_array = []
+		dungeon_cells = []
 		entry_cell = rdm_border_grid_cell()
 		generate_automata(entry_cell, 5, 4)
 		
@@ -72,8 +83,13 @@ func generate_dungeon() -> void:
 		
 		compute_cell_distances(entry_cell)
 	
+	
+	free_cells = Array(dungeon_cells)
 	update_cell_distance_display()
 	place_entry_and_exit()
+	
+	place_every_rooms()
+	update_room_display()
 	
 	generation_ungoing = false
 
@@ -98,6 +114,80 @@ func place_entry_and_exit() -> void:
 	
 	tilemap.set_cellv(entry_cell, entry_tile_id)
 	tilemap.set_cellv(exit_cell, exit_tile_id)
+
+
+func place_every_rooms() -> void:
+	for room in room_types:
+		var room_matrix = room.matrix
+		var room_slot_cells_array = find_room_slots(room_matrix)
+		room_slot_cells_array.shuffle()
+		
+		for _i in range(room_slot_cells_array.size()):
+			var room_slot_cell = room_slot_cells_array.pop_front()
+			
+			if !can_place_room(room_slot_cell, room_matrix):
+				continue
+			
+			place_room(room_slot_cell, room)
+
+
+func clear_room_display() -> void:
+	for child in $Rooms.get_children():
+		child.queue_free()
+
+
+func update_room_display() -> void:
+	clear_room_display()
+	
+	for room in rooms_array:
+		for j in range(room.matrix.size()):
+			for i in range(room.matrix[j].size()):
+				var room_cell = room.cell + Vector2(i, j)
+				
+				var color_rect = ColorRect.new()
+				color_rect.set_frame_color(room.color)
+				color_rect.color.a = 0.4
+				
+				color_rect.set_position(room_cell * tilemap.cell_size * tilemap.scale)
+				color_rect.set_size(tilemap.cell_size * tilemap.scale)
+				
+				$Rooms.add_child(color_rect)
+
+
+func place_room(cell: Vector2, room_type: DungeonRoom) -> void:
+	var room = room_type.duplicate(true)
+	var room_matrix = room.matrix
+	room.cell = cell
+	rooms_array.append(room)
+	
+	for j in range(room_matrix.size()):
+		for i in range(room_matrix[j].size()):
+			var room_cell = cell + Vector2(i, j)
+			
+			if room_cell in free_cells:
+				free_cells.erase(room_cell)
+
+
+func find_room_slots(room_matrix: Array) -> Array:
+	var possible_cells = []
+	
+	for cell in free_cells:
+		if can_place_room(cell, room_matrix):
+			possible_cells.append(cell)
+	
+	return possible_cells
+
+
+func can_place_room(cell: Vector2, room_matrix: Array) -> bool:
+	for j in range(room_matrix.size()):
+		for i in range(room_matrix[j].size()):
+			if room_matrix[j][i] == 0:
+				continue
+			
+			var room_cell = cell + Vector2(i, j)
+			if not room_cell in free_cells:
+				return false
+	return true
 
 
 func get_furtherest_cells() -> PoolVector2Array:
@@ -262,6 +352,9 @@ func _input(_event: InputEvent) -> void:
 
 func _on_automata_moved(cell: Vector2) -> void:
 	set_grid_cell(cell, CELL_TYPE.EMPTY)
+	
+	if not cell in dungeon_cells:
+		dungeon_cells.append(cell)
 
 
 func _on_automata_arrived(automata: CellularAutomata) -> void:

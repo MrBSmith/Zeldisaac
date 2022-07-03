@@ -84,6 +84,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://DungeonGenerator/DungeonGenerator.gd"
 }, {
+"base": "Resource",
+"class": "DungeonRoom",
+"language": "GDScript",
+"path": "res://DungeonGenerator/DungeonRoom.gd"
+}, {
 "base": "Actor",
 "class": "Enemy",
 "language": "GDScript",
@@ -185,6 +190,7 @@ _global_script_class_icons={
 "DropWeight": "",
 "DropperBehaviour": "",
 "DungeonGenerator": "",
+"DungeonRoom": "",
 "Enemy": "",
 "EnemyMoveState": "",
 "Inventory": "",

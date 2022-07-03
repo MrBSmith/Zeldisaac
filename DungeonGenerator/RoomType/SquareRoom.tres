@@ -1,0 +1,9 @@
+[gd_resource type="Resource" load_steps=2 format=2]
+
+[ext_resource path="res://DungeonGenerator/DungeonRoom.gd" type="Script" id=1]
+
+[resource]
+script = ExtResource( 1 )
+color = Color( 1, 0, 0, 1 )
+cell = Vector2( inf, inf )
+matrix = [ [ 1, 1 ], [ 1, 1 ] ]
