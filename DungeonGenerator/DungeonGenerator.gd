@@ -1,16 +1,17 @@
 extends Node2D
 class_name DungeonGenerator
 
-enum CELL_TYPE{
+
+enum CELL_TYPE {
 	EMPTY,
 	WALL
 }
 
 onready var automatas_array : Array = Utils.fetch(self, "CellularAutomata")
 onready var tilemap = $TileMap
+export var room_types : Array = []
 
 export var delay_btw_steps = 0.5
-export var room_types = []
 export var grid_size = Vector2(10, 10)
 
 var grid : Array
@@ -34,14 +35,6 @@ class CellDistance:
 		cell = _cell
 		dist = _dist
 
-class DungeonDoor:
-	var from : Vector2
-	var to : Vector2
-	
-	func _init(from_cell: Vector2, to_cell: Vector2) -> void:
-		from = from_cell
-		to = to_cell
-
 
 #### ACCESSORS ####
 
@@ -52,6 +45,9 @@ func get_class() -> String: return "DungeonGenerator"
 #### BUILT-IN ####
 
 func _ready() -> void:
+	for room_type in room_types:
+		room_type.read_matrix_texture()
+	
 	generate_dungeon()
 
 
@@ -60,6 +56,7 @@ func _ready() -> void:
 
 
 #### LOGIC ####
+
 
 func find_path_to_exit(cell: Vector2 = exit_cell, path: Array = [exit_cell]) -> Array:
 	var adjacents = Utils.get_adjacents(cell)
@@ -114,10 +111,9 @@ func generate_dungeon() -> void:
 
 			for automata in automatas_array:
 				var adjacents_cells = get_reachable_cells(automata.cell)
-				automata.step(adjacents_cells)
+				automata.step(adjacents_cells) 
 		
 		compute_cell_distances(entry_cell)
-	
 	
 	free_cells = Array(dungeon_cells)
 	update_cell_distance_display()
@@ -129,6 +125,7 @@ func generate_dungeon() -> void:
 	var path = find_path_to_exit()
 	
 	place_doors_along_path(path)
+	place_rooms_doors()
 	update_doors_display()
 	
 	generation_ungoing = false
@@ -147,9 +144,118 @@ func place_doors_along_path(path: Array) -> void:
 		previous_room = current_room
 
 
+func place_rooms_doors() -> void:
+	var ordered_rooms_dict = order_rooms_by_nb_adj_rooms()
+	
+	var ordered_keys = order_int_array(ordered_rooms_dict.keys())
+	
+	for nb_adj in ordered_keys:
+		for room in ordered_rooms_dict[nb_adj]:
+			var doors = room_get_doors(room)
+			
+			if doors.size() >= nb_adj:
+				continue
+			
+			var adj_rooms_array = room_get_adjacents_rooms(room)
+			adj_rooms_array.shuffle()
+			
+			# Remove already connected rooms
+			var nb_adjs_rooms = adj_rooms_array.size()
+			for i in range(nb_adjs_rooms):
+				var id = nb_adjs_rooms - 1 - i
+				
+				var adj_room = adj_rooms_array[id]
+				
+				if are_rooms_connected(room, adj_room):
+					adj_rooms_array.remove(id)
+			
+			
+			var nb_doors_to_place = int(clamp(2 - doors.size(), 0, 2))
+			
+			# Place missing doors
+			for _i in range(nb_doors_to_place):
+				if adj_rooms_array.empty():
+					break
+				
+				var adj_room = adj_rooms_array.pop_front()
+				
+				place_door_between_rooms(room, adj_room)
+
+
+func place_door_between_rooms(room1: DungeonRoom, room2: DungeonRoom) -> void:
+	if !room1.is_room_adjacent(room2):
+		push_error("The given rooms arn't adjacents: cannot add a door between it")
+		return
+	
+	var potential_doors = room1.get_potential_door_slots(room2)
+	potential_doors.shuffle()
+
+	var rdm_door = potential_doors[0]
+	doors_array.append(rdm_door)
+
+
+func are_rooms_connected(room1: DungeonRoom, room2: DungeonRoom) -> bool:
+	for door in doors_array:
+		if (room1.is_cell_inside(door.from) or room1.is_cell_inside(door.to)) && \
+			(room2.is_cell_inside(door.from) or room2.is_cell_inside(door.to)):
+			return true
+	return false
+
+
+func room_get_doors(room: DungeonRoom) -> Array:
+	var room_doors = []
+	for door in doors_array:
+		if room.is_cell_inside(door.from) or room.is_cell_inside(door.to):
+			room_doors.append(door)
+	return room_doors
+
+
+func order_int_array(array: Array) -> Array:
+	var ordered_array = array.duplicate()
+	
+	for value in array:
+		if ordered_array.empty():
+			ordered_array.append(value)
+			continue
+		
+		for i in range(ordered_array.size()):
+			var ordered_value = ordered_array[i]
+			if value < ordered_value:
+				ordered_array.insert(i, value)
+	
+	return ordered_array
+
+
 func place_door(from: Vector2, to: Vector2) -> void:
 	var door = DungeonDoor.new(from, to)
 	doors_array.append(door)
+
+
+func order_rooms_by_nb_adj_rooms() -> Dictionary:
+	var ordered_rooms_dict = {}
+	
+	for room in rooms_array:
+		var nb_adjs = room_get_adjacents_rooms(room).size()
+		
+		if ordered_rooms_dict.has(nb_adjs):
+			ordered_rooms_dict[nb_adjs].append(room)
+		else:
+			ordered_rooms_dict[nb_adjs] = [room]
+	
+	return ordered_rooms_dict
+
+
+func room_get_adjacents_rooms(room: Object) -> Array:
+	var adjacents_rooms = []
+	
+	for r in rooms_array:
+		if r == room:
+			continue
+		
+		if r.is_room_adjacent(room):
+			adjacents_rooms.append(r)
+	
+	return adjacents_rooms
 
 
 func update_doors_display() -> void:
@@ -216,32 +322,27 @@ func update_room_display() -> void:
 	Utils.clear($Rooms)
 	
 	for room in rooms_array:
-		for j in range(room.matrix.size()):
-			for i in range(room.matrix[j].size()):
-				var room_cell = room.cell + Vector2(i, j)
-				
-				var color_rect = ColorRect.new()
-				color_rect.set_frame_color(room.color)
-				color_rect.color.a = 0.4
-				
-				color_rect.set_position(room_cell * tilemap.cell_size * tilemap.scale)
-				color_rect.set_size(tilemap.cell_size * tilemap.scale)
-				
-				$Rooms.add_child(color_rect)
+		for room_cell in room.get_cells():
+			var color_rect = ColorRect.new()
+			color_rect.set_frame_color(room.color)
+			color_rect.color.a = 0.4
+			
+			color_rect.set_position(room_cell * tilemap.cell_size * tilemap.scale)
+			color_rect.set_size(tilemap.cell_size * tilemap.scale)
+			
+			$Rooms.add_child(color_rect)
 
 
 func place_room(cell: Vector2, room_type: DungeonRoom) -> void:
-	var room = room_type.duplicate(true)
-	var room_matrix = room.matrix
+	var room = room_type.duplicate()
 	room.cell = cell
+	room.matrix = room_type.matrix
+	
 	rooms_array.append(room)
 	
-	for j in range(room_matrix.size()):
-		for i in range(room_matrix[j].size()):
-			var room_cell = cell + Vector2(i, j)
-			
-			if room_cell in free_cells:
-				free_cells.erase(room_cell)
+	for room_cell in room.get_cells():
+		if room_cell in free_cells:
+			free_cells.erase(room_cell)
 
 
 func find_room_slots(room_matrix: Array) -> Array:

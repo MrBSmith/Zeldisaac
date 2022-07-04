@@ -3,10 +3,10 @@
 [ext_resource path="res://DungeonGenerator/EntryExit.png" type="Texture" id=1]
 [ext_resource path="res://DungeonGenerator/DungeonGenerator.gd" type="Script" id=2]
 [ext_resource path="res://icon.png" type="Texture" id=3]
-[ext_resource path="res://DungeonGenerator/RoomType/V_HallwayRoom.tres" type="Resource" id=4]
-[ext_resource path="res://DungeonGenerator/RoomType/SingleCellRoom.tres" type="Resource" id=5]
-[ext_resource path="res://DungeonGenerator/RoomType/H_HallwayRoom.tres" type="Resource" id=6]
-[ext_resource path="res://DungeonGenerator/RoomType/SquareRoom.tres" type="Resource" id=7]
+[ext_resource path="res://DungeonGenerator/RoomType/SquareRoom.tres" type="Resource" id=8]
+[ext_resource path="res://DungeonGenerator/RoomType/H_HallwayRoom.tres" type="Resource" id=9]
+[ext_resource path="res://DungeonGenerator/RoomType/OneCellRoom.tres" type="Resource" id=10]
+[ext_resource path="res://DungeonGenerator/RoomType/V_HallwayRoom.tres" type="Resource" id=11]
 
 [sub_resource type="TileSet" id=1]
 0/name = "icon.png 0"
@@ -54,8 +54,8 @@
 
 [node name="DungeonGenerator" type="Node2D"]
 script = ExtResource( 2 )
+room_types = [ ExtResource( 8 ), ExtResource( 9 ), ExtResource( 11 ), ExtResource( 10 ) ]
 delay_btw_steps = 0.0
-room_types = [ ExtResource( 7 ), ExtResource( 6 ), ExtResource( 4 ), ExtResource( 5 ) ]
 
 [node name="TileMap" type="TileMap" parent="."]
 scale = Vector2( 0.5, 0.5 )

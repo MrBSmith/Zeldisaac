@@ -5,15 +5,15 @@
 [ext_resource path="res://Themes/Styleboxes/Selection.tres" type="StyleBox" id=3]
 [ext_resource path="res://Themes/Font/BabaSmallPixel.ttf" type="DynamicFontData" id=4]
 
-[sub_resource type="DynamicFont" id=5]
+[sub_resource type="DynamicFont" id=1]
 size = 8
 font_data = ExtResource( 4 )
 
+[sub_resource type="StyleBoxEmpty" id=2]
+
 [sub_resource type="StyleBoxEmpty" id=3]
 
-[sub_resource type="StyleBoxEmpty" id=4]
-
-[sub_resource type="StyleBoxTexture" id=1]
+[sub_resource type="StyleBoxTexture" id=4]
 texture = ExtResource( 1 )
 region_rect = Rect2( 0, 0, 48, 48 )
 margin_left = 16.0
@@ -23,15 +23,15 @@ margin_bottom = 16.0
 axis_stretch_horizontal = 2
 axis_stretch_vertical = 2
 
-[sub_resource type="DynamicFont" id=2]
+[sub_resource type="DynamicFont" id=5]
 font_data = ExtResource( 2 )
 
 [resource]
-default_font = SubResource( 2 )
+default_font = SubResource( 5 )
 ItemList/colors/font_color = Color( 1, 1, 1, 1 )
-ItemList/fonts/font = SubResource( 5 )
-ItemList/styles/bg = SubResource( 3 )
-ItemList/styles/bg_focus = SubResource( 4 )
+ItemList/fonts/font = SubResource( 1 )
+ItemList/styles/bg = SubResource( 2 )
+ItemList/styles/bg_focus = SubResource( 3 )
 ItemList/styles/selected = ExtResource( 3 )
 ItemList/styles/selected_focus = ExtResource( 3 )
-Panel/styles/panel = SubResource( 1 )
+Panel/styles/panel = SubResource( 4 )

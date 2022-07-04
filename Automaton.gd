@@ -40,7 +40,9 @@ func _ready() -> void:
 	var steps_id_array = range(max_steps)
 	
 	for _i in range(sub_automatas):
-		var automata_step_id = steps_id_array.pop_at(randi() % steps_id_array.size())
+		var id = randi() % steps_id_array.size()
+		var automata_step_id = steps_id_array[id]
+		steps_id_array.remove(id)
 		new_automatas_steps.append(automata_step_id)
 
 
@@ -60,7 +62,7 @@ func step(accessible_cells: Array) -> void:
 	
 	if nb_steps in new_automatas_steps:
 		var id = new_automatas_steps.find(nb_steps)
-		new_automatas_steps.pop_at(id)
+		new_automatas_steps.remove(id)
 		emit_signal("sub_automata_creation", cell, 5, 0)
 	
 	if nb_steps >= max_steps:

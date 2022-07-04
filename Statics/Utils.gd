@@ -56,3 +56,7 @@ static func get_adjacents(cell: Vector2) -> PoolVector2Array:
 	
 	return adjacents
 
+
+static func are_cells_adjacents(c1: Vector2, c2: Vector2) -> bool:
+	return (c1.x == c2.x && abs(c1.y - c2.y) == 1) or \
+		(c1.y == c2.y && abs(c1.x - c2.x) == 1)
